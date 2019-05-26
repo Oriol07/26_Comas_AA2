@@ -22,19 +22,19 @@ public:
 	Clyde();
 	Clyde(int posX, int posY, int lifes);   
 
-	void setPosition(vec2 position);
+	void SetPosition(vec2 position);
 
-	vec2 getPosition();
+	vec2 GetPosition();
 
-	void setDir(Direction d);
+	void SetDir(Direction d);
 
-	Direction getDir();
+	Direction GetDir();
 
-	void setCharStepped(char step);
+	void SetCharStepped(char step);
 	
-	char getCharStepped();
+	char GetCharStepped();
 
-	bool touchPlayer();
+	bool TouchPlayer();
 
 	~Clyde();
 

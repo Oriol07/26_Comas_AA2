@@ -89,23 +89,23 @@ int main()
 
 					if (GetAsyncKeyState(VK_UP))
 					{
-						player.mov = Direction::UP; //ARRIBA
-						player.aMoure = true;
+						player.SetDir(Direction::UP); //ARRIBA
+						player.SetCanMove(true);
 					}
 					if (GetAsyncKeyState(VK_DOWN))
 					{
-						player.mov = Direction::DOWN;	//ABAJO
-						player.aMoure = true;
+						player.SetDir(Direction::DOWN);	//ABAJO
+						player.SetCanMove(true);
 					}
 					if (GetAsyncKeyState(VK_RIGHT))
 					{
-						player.mov = Direction::RIGHT;	//IZQUIERDA
-						player.aMoure = true;
+						player.SetDir(Direction::RIGHT);	//IZQUIERDA
+						player.SetCanMove(true);
 					}
 					if (GetAsyncKeyState(VK_LEFT))
 					{
-						player.mov = Direction::LEFT;	//DERECHA
-						player.aMoure = true;
+						player.SetDir(Direction::LEFT);	//DERECHA
+						player.SetCanMove(true);
 					}
 					if (GetAsyncKeyState(VK_ESCAPE)) //"ESCAPE" // terminar el juego.
 					{
@@ -115,7 +115,7 @@ int main()
 
 				}
 				
-				else player.mov = Direction::ZERO;
+				else player.SetDir(Direction::ZERO);
 				if (GetAsyncKeyState(0x50))
 				{
 					Play = false;
@@ -124,29 +124,30 @@ int main()
 					system("cls");
 				}
 
-				if (player.aMoure) // true cuando se detecta event del teclat
+				if (player.CanMove()) // true cuando se detecta event del teclat
 				{
-					if (map.noExistMur(player.pos, player.mov)) //Si no existeix mur a la proxima posicio.
+					if (map.NoExistMur(player.GetPos(), player.GetDir())) //Si no existeix mur a la proxima posicio.
 					{
-						if (map.existPunt(player.pos, player.mov)) // si es punto se suma uno.
+						if (map.ExistPunt(player.GetPos(), player.GetDir())) // si es punto se suma uno.
 							player.SetScore(player.GetScore() + 1);
-						map.movePlayer(player.pos, player.mov); // mou al player a la prox posicio
+						map.MovePlayer(player); // mou al player a la prox posicio
 					}
-					player.aMoure = false;
+					player.SetCanMove(false);
 				}
 				
-				map.moveAI(player); // Es mouen els enemics.
-				if (map.playerTouchEnemy())
+				map.MoveAI(player); // Es mouen els enemics.
+				if (map.PlayerTouchEnemy(player))
 				{
-					player.lifes--;
-					if (player.lifes == 0)
+					player.SetLifes(player.GetLifes() - 1);
+					
+					if (player.GetLifes() == 0)
 						Play = false;
 				}
 				Sleep(TIME); //Refresc del joc cada un segón.
 				system("cls"); // limpiamos pantalla
 				std::cout << "********* PLAY *********" << std::endl;
-				map.printMap(); //printamoss MAPA
-				player.printPlayer(); //printtamos HUD/Score
+				map.PrintMap(); //printamoss MAPA
+				player.PrintPlayer(); //printtamos HUD/Score
 			
 		}
 

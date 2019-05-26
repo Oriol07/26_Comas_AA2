@@ -37,6 +37,7 @@ Map::Map(Player &jugador)
 	* Llegida inicial dels elements del mapa.		   *
 	* Busquem on estan els elements movibles del mapa. *
 	****************************************************/
+
 	for (int i = 1; i < filas + 1; i++)
 	{
 		for (int j = 0; j < columnas; j++)
@@ -44,25 +45,27 @@ Map::Map(Player &jugador)
 			switch (map[i][j])
 			{
 			case JUGADOR: //pos del jugador.
-				jugador.pos.x = j;
-				jugador.pos.y = i;
-				setPlayer(jugador.pos);
+				posMap.x = j; posMap.y = i; // Aprofitem la p
+				
+				jugador.SetPosition(posMap);
+				jugador.SetInitPos(jugador.GetPos());
+				SetPlayer(jugador.GetPos());
 				break;
-			/*case BLINKY:
-				Blinky b;
-				vec2 p;
-				p.x = j; p.y = i;
-				b.SetPosition(p);
-				setFirstDirBlinky(b);
+			case BLINKY:
+				posMap.x = j; posMap.y = i;
+				b.SetPosition(posMap);
+				SetFirstDirBlinky(b);
 				eBlinky.push_back(b);
-				break; */
+				break; 
 			case CLYDE: 
-				Clyde c;
-				vec2 pos;
-				pos.x = j; pos.y = i;
-				c.setPosition(pos);
+				posMap.x = j; posMap.y = i;
+				c.SetPosition(posMap);
 				eClyde.push_back(c);
 				break; 
+			case INKY:
+				posMap.x = j; posMap.y = i;
+				this -> i.SetPosition(posMap);
+				eInky.push_back(this -> i);
 			}
 		}
 	}
@@ -91,7 +94,7 @@ int Map::getRows()
 /********************************
 * Posem la posició del jugador. *
 *********************************/
-void Map::setPlayer(vec2 pos)
+void Map::SetPlayer(vec2 pos)
 {
 	map[pos.y][pos.x] = JUGADOR;
 }
@@ -99,7 +102,7 @@ void Map::setPlayer(vec2 pos)
 /*********************************************************************************
 * Comprovem si a la próxima posició és un punt ('*'), i retornem true, si ho és. *
 **********************************************************************************/
-bool Map::existPunt(vec2 pos, Direction dir)
+bool Map::ExistPunt(vec2 pos, Direction dir)
 {
 	switch (dir)
 	{
@@ -119,7 +122,7 @@ bool Map::existPunt(vec2 pos, Direction dir)
 /*************************************************************************************
 * Comprovem si la próxima posició del jugador és un mur, retornem true en cas que no.*
 **************************************************************************************/
-bool Map::noExistMur(vec2 pos, Direction dir)
+bool Map::NoExistMur(vec2 pos, Direction dir)
 {
 	switch (dir)
 	{
@@ -139,7 +142,7 @@ bool Map::noExistMur(vec2 pos, Direction dir)
 * En aquesta funció rebrem la proxima direcció, en cas que la posicio sigui un borde del map retornarem true,     *
 * perque a l' hora de moure el jugador es mogui a l' altra banda.												  *
 *******************************************************************************************************************/
-bool Map::bordeMapa(vec2 pos, Direction dir)
+bool Map::BordeMapa(vec2 pos, Direction dir)
 {
 	
 	switch (dir)
@@ -158,70 +161,84 @@ bool Map::bordeMapa(vec2 pos, Direction dir)
 /**************************************
 * Actualitza el moviment del jugador. *
 ***************************************/
-void Map::movePlayer(vec2 &pos, Direction dir)
+void Map::MovePlayer(Player &player)
 {
-	vec2 newPos = pos;
+	vec2 newPos = player.GetPos();
 	
 	//calculem la nova posicio
 	//Comprovem si el jugador no es troba en un borde del mapa, en cas que si, el jugador serà teletransportat a l'altra banda.
-	switch (dir)
+	switch (player.GetDir())
 	{
 		case Direction::LEFT: 
-			if (!bordeMapa(pos, dir))
-				newPos = { pos.x - 1, pos.y };
+			if (!BordeMapa(player.GetPos(), player.GetDir()))
+				newPos = { player.GetPos().x - 1, player.GetPos().y };
 			else
-				newPos = { columnas - 1, pos.y };
+				newPos = { columnas - 1, player.GetPos().y };
 			break;
 
 		case Direction::RIGHT: 
-			if (!bordeMapa(pos, dir))
-				newPos = { pos.x + 1, pos.y };
+			if (!BordeMapa(player.GetPos(), player.GetDir()))
+				newPos = {player.GetPos().x + 1, player.GetPos().y };
 			else
-				newPos = { 0, pos.y };
+				newPos = { 0, player.GetPos().y };
 			break;
 
 		case Direction::UP: 
-			if (!bordeMapa(pos, dir))
-				newPos = { pos.x, pos.y - 1 };
+			if (!BordeMapa(player.GetPos(), player.GetDir()))
+				newPos = {player.GetPos().x, player.GetPos().y - 1 };
 			else
-				newPos = { pos.x, filas};
+				newPos = { player.GetPos().x, filas};
 			break;
 
 		case Direction::DOWN: 
-			if (!bordeMapa(pos, dir))
-				newPos = { pos.x, pos.y + 1 };
+			if (!BordeMapa(player.GetPos(), player.GetDir()))
+				newPos = { player.GetPos().x, player.GetPos().y + 1 };
 			else
-				newPos = { pos.x, 1};
+				newPos = { player.GetPos().x, 1};
 			break;
 	}
+	player.SetCharStepped(map[newPos.y][newPos.x]);
 
-	map[pos.y][pos.x] = NOTHING; // Un cop el jugador es mou, actualitzem la anterior ubicació amb ' ';
+	map[player.GetPos().y][player.GetPos().x] = NOTHING; // Un cop el jugador es mou, actualitzem la anterior ubicació amb ' ';
 	map[newPos.y][newPos.x] = JUGADOR; //  Actualitzem la nova posicio amb la cara del jugador.
-	pos = newPos;  
+	player.SetPosition(newPos);
 }
 
-void Map::moveAI(Player player)
+/**************************************************************
+* Actualizem tots els moviments dels enemics en els vectors.  *
+***************************************************************/
+void Map::MoveAI(Player player)
 {
 	for (int i = 0; i < eBlinky.size(); i++)
-		moveBlinky(eBlinky[i]);
+		MoveBlinky(eBlinky[i]);
 	for (int i = 0; i < eClyde.size(); i++)
-		moveClyde(eClyde[i], player);
+		MoveClyde(eClyde[i], player);
+	for (int i = 0; i < eInky.size(); i++)
+		MoveInky(eInky[i], player);
+		
 }
 
-void Map::setFirstDirBlinky(Blinky &blink)
+/******************************************
+* Li donem la primera direcció al Blinky  *
+*******************************************/
+void Map::SetFirstDirBlinky(Blinky &blink)
 {
 	bool haveDir = false;
 	do {
 
 		blink.SetDir(Direction(rand() % 4));
-		if (noExistMur(blink.GetPosition(), blink.GetDir()))
+		if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 		{
 			haveDir = true;
 		}
 	} while (!haveDir);
 
 }
-void Map::moveBlinky(Blinky &blink)
+
+/***************************************
+* Actualitza el moviment de un Blinky. *
+****************************************/
+void Map::MoveBlinky(Blinky &blink)
 {
 	bool haveDir = false;
 	do
@@ -229,7 +246,7 @@ void Map::moveBlinky(Blinky &blink)
 			switch (blink.GetDir())
 			{
 			case Direction::LEFT:
-				if (!noExistMur(blink.GetPosition(), Direction::UP) && !noExistMur(blink.GetPosition(), Direction::DOWN) && !noExistMur(blink.GetPosition(), Direction::LEFT))
+				if (!NoExistMur(blink.GetPosition(), Direction::UP) && !NoExistMur(blink.GetPosition(), Direction::DOWN) && !NoExistMur(blink.GetPosition(), Direction::LEFT))
 				{
 					blink.SetDir(Direction::ZERO);
 					haveDir = true; //Que es quedi quiet ja que no tindra cap a on anar i evitar que el joc es colapsi.
@@ -239,7 +256,7 @@ void Map::moveBlinky(Blinky &blink)
 				blink.SetDir(Direction(rand() % 3)); // 3 per evitar el Right
 				if (blink.GetDir() != Direction::RIGHT)
 				{
-					if (noExistMur(blink.GetPosition(), blink.GetDir()))
+					if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 					{
 						haveDir = true;
 						break;
@@ -258,7 +275,7 @@ void Map::moveBlinky(Blinky &blink)
 				}
 				break;
 			case Direction::UP:
-				if (!noExistMur(blink.GetPosition(), Direction::RIGHT) && !noExistMur(blink.GetPosition(), Direction::UP) && !noExistMur(blink.GetPosition(), Direction::LEFT))
+				if (!NoExistMur(blink.GetPosition(), Direction::RIGHT) && !NoExistMur(blink.GetPosition(), Direction::UP) && !NoExistMur(blink.GetPosition(), Direction::LEFT))
 				{
 					blink.SetDir(Direction::ZERO);
 					haveDir = true; //Que es quedi quiet ja que no tindra cap a on anar i evitar que el joc es colapsi.
@@ -267,7 +284,7 @@ void Map::moveBlinky(Blinky &blink)
 				blink.SetDir(Direction(rand() % 4)); //
 				if (blink.GetDir() != Direction::DOWN)
 				{
-					if (noExistMur(blink.GetPosition(), blink.GetDir()))
+					if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 					{
 						haveDir = true;
 						break;
@@ -287,7 +304,7 @@ void Map::moveBlinky(Blinky &blink)
 				break;
 
 			case Direction::RIGHT:
-				if (!noExistMur(blink.GetPosition(), Direction::RIGHT) && !noExistMur(blink.GetPosition(), Direction::DOWN) && !noExistMur(blink.GetPosition(), Direction::UP))
+				if (!NoExistMur(blink.GetPosition(), Direction::RIGHT) && !NoExistMur(blink.GetPosition(), Direction::DOWN) && !NoExistMur(blink.GetPosition(), Direction::UP))
 				{
 					blink.SetDir(Direction::ZERO);
 					haveDir = true; //Que es quedi quiet ja que no tindra cap a on anar i evitar que el joc es colapsi.
@@ -296,7 +313,7 @@ void Map::moveBlinky(Blinky &blink)
 				blink.SetDir(Direction(rand() % 4));
 				if (blink.GetDir() != Direction::LEFT)
 				{
-					if (noExistMur(blink.GetPosition(), blink.GetDir()))
+					if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 					{
 						haveDir = true;
 						break;
@@ -316,7 +333,7 @@ void Map::moveBlinky(Blinky &blink)
 				break;
 
 			case Direction::DOWN:
-				if (!noExistMur(blink.GetPosition(), Direction::RIGHT) && !noExistMur(blink.GetPosition(), Direction::DOWN) && !noExistMur(blink.GetPosition(), Direction::LEFT))
+				if (!NoExistMur(blink.GetPosition(), Direction::RIGHT) && !NoExistMur(blink.GetPosition(), Direction::DOWN) && !NoExistMur(blink.GetPosition(), Direction::LEFT))
 				{
 					blink.SetDir(Direction::ZERO);
 					haveDir = true; //Que es quedi quiet ja que no tindra cap a on anar i evitar que el joc es colapsi.
@@ -327,7 +344,7 @@ void Map::moveBlinky(Blinky &blink)
 					blink.SetDir(Direction(rand() % 3 + 1));
 					if (blink.GetDir() != Direction::UP)
 					{
-						if (noExistMur(blink.GetPosition(), blink.GetDir()))
+						if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 						{
 							haveDir = true;
 							break;
@@ -360,29 +377,29 @@ void Map::moveBlinky(Blinky &blink)
 	switch (blink.GetDir())
 	{
 	case Direction::LEFT:
-		if (!bordeMapa(blink.GetPosition(), blink.GetDir()))
+		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
 			newPos = { blink.GetPosition().x - 1, blink.GetPosition().y };
 		else
 			newPos = { getCols() - 1, blink.GetPosition().y };
 		break;
 
 	case Direction::RIGHT:
-		if (!bordeMapa(blink.GetPosition(), blink.GetDir()))
+		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
 			newPos = { blink.GetPosition().x + 1, blink.GetPosition().y };
 		else
 			newPos = { 0, blink.GetPosition().y };
 		break;
 
 	case Direction::UP:
-		if (!bordeMapa(blink.GetPosition(), blink.GetDir()))
+		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
 			newPos = { blink.GetPosition().x, blink.GetPosition().y - 1 };
 		else
 			newPos = { blink.GetPosition().x, getRows() };
 		break;
 
 	case Direction::DOWN:
-		if (!bordeMapa(blink.GetPosition(), blink.GetDir()))
-			if (noExistMur(blink.GetPosition(), blink.GetDir()))
+		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
+			if (NoExistMur(blink.GetPosition(), blink.GetDir()))
 			{
 				newPos = { blink.GetPosition().x, blink.GetPosition().y + 1 };
 			}
@@ -399,18 +416,22 @@ void Map::moveBlinky(Blinky &blink)
 	blink.SetPosition(newPos); //Actualitzem la nova posició;
 }
 
-
-
-bool Map::playerTouchEnemy()
+/****************************************************
+* Retorna true quan el player toca un altre enemic. *
+*****************************************************/
+bool Map::PlayerTouchEnemy(Player player)
 {
 	for (int i = 0; i < eBlinky.size(); i++)
 	{
-		if (eBlinky[i].TouchPlayer())
+		if (eBlinky[i].TouchPlayer() || player.TouchEnemy())
 			return true;
 	}
 	return false;
 }
 
+/********************************************************
+* Retorna el caracter que hi haura a la seguent posicio	*
+*********************************************************/
 char Map::NextCharPosition(Direction dir, vec2 nPos)
 {
 	
@@ -428,88 +449,65 @@ char Map::NextCharPosition(Direction dir, vec2 nPos)
 }
 
 
-//CLYDE
-
-
-
-/*void Map::moveAI()
+/*************************************
+* Actualiza el moviment de un Clyde. *
+**************************************/
+void Map::MoveClyde(Clyde &clyd, Player player)
 {
-	for (int i = 0; i < eClyde.size(); i++)
-		moveClyde(eClyde[i]);
-}*/
-
-/*void Map::setFirstDirClyde(Clyde &clyd)
-{
-	bool haveDir = false;
-	do {
-
-		blink.SetDir(Direction(rand() % 4));
-		if (noExistMur(blink.GetPosition(), blink.GetDir()))
-		{
-			haveDir = true;
-		}
-	} while (!haveDir);
-
-}*/
-
-
-
-void Map::moveClyde(Clyde &clyd, Player player)
-{
-		vec2 newPos = clyd.getPosition();
+		vec2 newPos = clyd.GetPosition();
 
 		//calculem la nova posicio
 		//Comprovem si en Clyde no es troba en un borde del mapa, en cas que si, el jugador serà teletransportat a l'altra banda.
-		switch (player.mov)
+		switch (player.GetDir())
 		{
 			case Direction::LEFT:
-				if (noExistMur(clyd.getPosition(), Direction::RIGHT)) 
+				if (NoExistMur(clyd.GetPosition(), Direction::RIGHT)) 
 				{
-					clyd.setDir(Direction::RIGHT);
+					clyd.SetDir(Direction::RIGHT);
 				}
 				else 
 				{
-					clyd.setDir(Direction::ZERO);
+					clyd.SetDir(Direction::ZERO);
 				}
 
 				break;
 
 			case Direction::RIGHT:
-				if (noExistMur(clyd.getPosition(), Direction::LEFT)) 
+				if (NoExistMur(clyd.GetPosition(), Direction::LEFT)) 
 				{
-					clyd.setDir(Direction::LEFT);
+					clyd.SetDir(Direction::LEFT);
 				}
 				else
 				{
-					clyd.setDir(Direction::ZERO);
+					clyd.SetDir(Direction::ZERO);
 				}
 				break;
 
 			case Direction::UP:
-				if (noExistMur(clyd.getPosition(), Direction::DOWN)) 
+				if (NoExistMur(clyd.GetPosition(), Direction::DOWN)) 
 				{
-					clyd.setDir(Direction::DOWN);
+					clyd.SetDir(Direction::DOWN);
 				}
 
 				else 
 				{
-					clyd.setDir(Direction::ZERO);
+					clyd.SetDir(Direction::ZERO);
 				}
 				break;
 
 			case Direction::DOWN:
-				if (noExistMur(clyd.getPosition(), Direction::UP)) 
+				if (NoExistMur(clyd.GetPosition(), Direction::UP)) 
 				{
-					clyd.setDir(Direction::UP);
+					clyd.SetDir(Direction::UP);
 				}
 				else 
 				{
-					clyd.setDir(Direction::ZERO);
+					clyd.SetDir(Direction::ZERO);
 				}
 				break;
 			case Direction::ZERO:
 			{
-				clyd.setDir(Direction::ZERO);
+				clyd.SetDir(Direction::ZERO);
 			}
 		}
 
@@ -518,95 +516,162 @@ void Map::moveClyde(Clyde &clyd, Player player)
 	//calculem la nova posicio
 	//Comprovem si el Binky no es troba en un borde del mapa, en cas que si, el Binky serà teletransportat a l'altra banda.
 
-	//ESTO DE ABAJO AHORA LO CAMBIO
-	switch (clyd.getDir())
+	switch (clyd.GetDir())
 	{
 	case Direction::LEFT:
-		if (!bordeMapa(clyd.getPosition(), clyd.getDir()))
-			newPos = { clyd.getPosition().x - 1, clyd.getPosition().y };
+		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
+			newPos = { clyd.GetPosition().x - 1, clyd.GetPosition().y };
 		else
-			newPos = { getCols() - 1, clyd.getPosition().y };
+			newPos = { getCols() - 1, clyd.GetPosition().y };
 		break;
 
 	case Direction::RIGHT:
-		if (!bordeMapa(clyd.getPosition(), clyd.getDir()))
-			newPos = { clyd.getPosition().x + 1, clyd.getPosition().y };
+		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
+			newPos = { clyd.GetPosition().x + 1, clyd.GetPosition().y };
 		else
-			newPos = { 0, clyd.getPosition().y };
+			newPos = { 0, clyd.GetPosition().y };
 		break;
 
 	case Direction::UP:
-		if (!bordeMapa(clyd.getPosition(), clyd.getDir()))
-			newPos = { clyd.getPosition().x, clyd.getPosition().y - 1 };
+		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
+			newPos = { clyd.GetPosition().x, clyd.GetPosition().y - 1 };
 		else
-			newPos = { clyd.getPosition().x, getRows() };
+			newPos = { clyd.GetPosition().x, getRows() };
 		break;
 
 	case Direction::DOWN:
-		if (!bordeMapa(clyd.getPosition(), clyd.getDir()))
-			if (noExistMur(clyd.getPosition(), clyd.getDir()))
+		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
+			if (NoExistMur(clyd.GetPosition(), clyd.GetDir()))
 			{
-				newPos = { clyd.getPosition().x, clyd.getPosition().y + 1 };
+				newPos = { clyd.GetPosition().x, clyd.GetPosition().y + 1 };
 			}
 			else
-				newPos = { clyd.getPosition().x, 1 };
+				newPos = { clyd.GetPosition().x, 1 };
 		break;
 	}
-	if (clyd.getCharStepped() != CLYDE)
-		map[clyd.getPosition().y][clyd.getPosition().x] = clyd.getCharStepped(); // Abans de que el Binky es mogui, actualitzem la posicio amb el que hi havia anteriorment.;
+	if (clyd.GetCharStepped() != CLYDE || clyd.GetCharStepped() != JUGADOR || clyd.GetCharStepped() != BLINKY || clyd.GetCharStepped() != INKY)
+		map[clyd.GetPosition().y][clyd.GetPosition().x] = clyd.GetCharStepped(); // Abans de que el Binky es mogui, actualitzem la posicio amb el que hi havia anteriorment.;
 
-	clyd.setCharStepped(NextCharPosition(clyd.getDir(), clyd.getPosition())); // Guardarem el que trepitjara, a menys que sigui un altre persona;
+	clyd.SetCharStepped(NextCharPosition(clyd.GetDir(), clyd.GetPosition())); // Guardarem el que trepitjara, a menys que sigui un altre persona;
 
 	map[newPos.y][newPos.x] = CLYDE; //  Actualitzem la nova posicio amb la cara del jugador.
-	clyd.setPosition(newPos); //Actualitzem la nova posició;
+	clyd.SetPosition(newPos); //Actualitzem la nova posició;
 }
 
-
-/*
-bool Map::playerTouchEnemy()
+/************************************
+* Actualiza el moviment de un Inky.	*
+*************************************/
+void Map::MoveInky(Inky &ink, Player player)
 {
-	for (int i = 0; i < eBlinky.size(); i++)
+	vec2 newPos = ink.GetPosition();
+
+	//calculem la nova posicio
+	//Comprovem si en Clyde no es troba en un borde del mapa, en cas que si, el jugador serà teletransportat a l'altra banda.
+	switch (player.GetDir())
 	{
-		if (eBlinky[i].TouchPlayer())
-			return true;
+		case Direction::LEFT:
+			if (NoExistMur(ink.GetPosition(), player.GetDir()))
+			{
+				ink.SetDir(player.GetDir());
+			}
+			else
+			{
+				ink.SetDir(Direction::ZERO);
+			}
+
+			break;
+
+		case Direction::RIGHT:
+			if (NoExistMur(ink.GetPosition(), player.GetDir()))
+			{
+				ink.SetDir(player.GetDir());
+			}
+			else
+			{
+				ink.SetDir(Direction::ZERO);
+			}
+			break;
+
+		case Direction::UP:
+			if (NoExistMur(ink.GetPosition(), player.GetDir()))
+			{
+				ink.SetDir(Direction::UP);
+			}
+
+			else
+			{
+				ink.SetDir(Direction::ZERO);
+			}
+			break;
+
+		case Direction::DOWN:
+			if (NoExistMur(ink.GetPosition(), player.GetDir()))
+			{
+				ink.SetDir(Direction::DOWN);
+			}
+			else
+			{
+				ink.SetDir(Direction::ZERO);
+			}
+			break;
+		case Direction::ZERO:
+		{
+			ink.SetDir(Direction::ZERO);
+		}
 	}
-	return false;
-}
 
-char Map::NextCharPosition(Direction dir, vec2 nPos)
-{
 
-	switch (dir)
+
+	//calculem la nova posicio
+	//Comprovem si el Binky no es troba en un borde del mapa, en cas que si, el Binky serà teletransportat a l'altra banda.
+
+	switch (ink.GetDir())
 	{
-	case Direction::UP:
-		return map[nPos.y - 1][nPos.x];
-	case Direction::DOWN:
-		return map[nPos.y + 1][nPos.x];
-	case Direction::LEFT:
-		return map[nPos.y][nPos.x - 1];
-	case Direction::RIGHT:
-		return map[nPos.y][nPos.x + 1];
+		case Direction::LEFT:
+			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
+				newPos = { ink.GetPosition().x - 1, ink.GetPosition().y };
+			else
+				newPos = { getCols() - 1, ink.GetPosition().y };
+			break;
+
+		case Direction::RIGHT:
+			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
+				newPos = { ink.GetPosition().x + 1, ink.GetPosition().y };
+			else
+				newPos = { 0, ink.GetPosition().y };
+			break;
+
+		case Direction::UP:
+			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
+				newPos = { ink.GetPosition().x, ink.GetPosition().y - 1 };
+			else
+				newPos = { ink.GetPosition().x, getRows() };
+			break;
+
+		case Direction::DOWN:
+			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
+				if (NoExistMur(ink.GetPosition(), ink.GetDir()))
+				{
+					newPos = { ink.GetPosition().x, ink.GetPosition().y + 1 };
+				}
+				else
+					newPos = { ink.GetPosition().x, 1 };
+			break;
 	}
+
+	if (ink.GetCharStepped() != CLYDE || ink.GetCharStepped() != JUGADOR || ink.GetCharStepped() != BLINKY || ink.GetCharStepped() != INKY )
+		map[ink.GetPosition().y][ink.GetPosition().x] = ink.GetCharStepped(); // Abans de que el Binky es mogui, actualitzem la posicio amb el que hi havia anteriorment.;
+
+	ink.SetCharStepped(NextCharPosition(ink.GetDir(), ink.GetPosition())); // Guardarem el que trepitjara, a menys que sigui un altre persona;
+
+	map[newPos.y][newPos.x] = INKY; //  Actualitzem la nova posicio amb la cara del jugador.
+	ink.SetPosition(newPos); //Actualitzem la nova posició;
+
 }
-  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /********************************************
 * Print dels elements del mapa per consola. *
 *********************************************/
-void Map::printMap()
+void Map::PrintMap()
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //Lletres de color blanc, per el titol.
 	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl;

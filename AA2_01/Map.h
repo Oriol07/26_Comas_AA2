@@ -12,7 +12,7 @@
 #include "Clyde.h"
 #include "Inky.h"
 
-struct Map 
+class Map 
 {
  private:
 	#pragma region Variables
@@ -21,6 +21,10 @@ struct Map
 		std::vector<Blinky> eBlinky; 
 		std::vector<Inky> eInky;
 		std::vector<Clyde> eClyde;
+		Blinky b;
+		Inky i;
+		Clyde c;
+		vec2 posMap;
 
 	#pragma endregion 
 	
@@ -35,28 +39,28 @@ struct Map
 	#pragma endregion
 	
 	#pragma region Collision functions
-		bool bordeMapa(vec2 pos, Direction dir);
-		bool existPunt(vec2 pos, Direction dir);
-		bool noExistMur(vec2 pos, Direction dir);
-		bool touchEnemy(vec2 pos, Direction dir);
-		bool playerTouchEnemy();
+		bool BordeMapa(vec2 pos, Direction dir);
+		bool ExistPunt(vec2 pos, Direction dir);
+		bool NoExistMur(vec2 pos, Direction dir);
+		bool TouchEnemy(vec2 pos, Direction dir);
+		bool PlayerTouchEnemy(Player player);
 	#pragma endregion
 
 		int getCols();
 		int getRows();
 	#pragma region Position functions
-		void setPlayer(vec2 pos);
-		void movePlayer(vec2 &pos_, Direction move);
-		void moveAI(Player player);
-		void moveBlinky(Blinky &blink);
-		void moveInky(Inky &ink);
-		void moveClyde(Clyde &clyd, Player player);
+		void SetPlayer(vec2 pos);
+		void MovePlayer(Player &player);
+		void MoveAI(Player player);
+		void MoveBlinky(Blinky &blink);
+		void MoveInky(Inky &ink, Player player);
+		void MoveClyde(Clyde &clyd, Player player);
 		char NextCharPosition(Direction dir, vec2 p);
-		void setFirstDirBlinky(Blinky &blink);
+		void SetFirstDirBlinky(Blinky &blink);
 
 	#pragma endregion
 
 	#pragma region Read and Print function
-		void printMap();
+		void PrintMap();
 	#pragma endregion
 };

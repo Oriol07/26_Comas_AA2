@@ -24,17 +24,17 @@ Clyde::~Clyde() {
 	 
 }
 
-vec2 Clyde::getPosition()
+vec2 Clyde::GetPosition()
 {
 	return pos;
 }
 
-void Clyde::setPosition(vec2 position) {
+void Clyde::SetPosition(vec2 position) {
 
 	pos = position;
 }
 
-void Clyde::setCharStepped(char step) {
+void Clyde::SetCharStepped(char step) {
 
 	if (step != BLINKY || step != INKY || step != CLYDE || step != JUGADOR) {
 		charStepped = step;
@@ -44,23 +44,23 @@ void Clyde::setCharStepped(char step) {
 		charStepped = ' ';
 	}
 }
-char Clyde::getCharStepped()
+char Clyde::GetCharStepped()
 {
 	return charStepped;
 }
 
-bool Clyde::touchPlayer(){
+bool Clyde::TouchPlayer(){
 
 	return charStepped == JUGADOR; 
 }
 
 
-Direction Clyde::getDir()
+Direction Clyde::GetDir()
 {
 	return mov;
 }
 
-void Clyde::setDir(Direction d)
+void Clyde::SetDir(Direction d)
 {
 	mov = d;
 }

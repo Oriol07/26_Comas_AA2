@@ -6,19 +6,21 @@
 #include "Types.h"
 
 
-struct Player 
+class Player 
 {
-
+private:
 #pragma region Variables
 	int score; // Puntuació
 	int lifes; // Les vides del jugador
-	char playerRef; // '>' la referencia del personatge, com es veura per pantalla.
-	char input; // variable que farem servir per guardar el input del teclat.
 	Direction mov; // Enum que conté el tipus de moviment a realitzar
 	vec2 pos; // Variable que tindra guardades les posicions en els eixos de les 'x' i 'y';
-	bool aMoure; //Aquesta condicio es posara a true, cada cop que el jugador premi una tecla, així el moviment del jugador només funcióna quan es manté la tecla presa.
+	bool toMove; //Aquesta condicio es posara a true, cada cop que el jugador premi una tecla, així el moviment del jugador només funcióna quan es manté la tecla presa.
+	char charStepped; //character que passa per sobre.
+	vec2 initPos;
+
 #pragma endregion
 
+public:
 #pragma region Constructor
 	Player(); // Constructor per defecte
 	Player(int posX, int posY, int lifes); // Per si volem posar nosaltres la posició, i el numero de vides.
@@ -28,10 +30,17 @@ struct Player
 	~Player();
 #pragma endregion
 
-#pragma region Position and key events functions
-	void UpdatePosition(); //On es fan els events de input
-	bool isGameEnded(); //retorna escape
+#pragma region Position and move functions
 	void SetPosition(vec2 position);
+	vec2 GetPos(); 
+	void SetInitPos(vec2 position);
+	bool TouchEnemy(); //comprova si toca l'enemic.
+	void SetCharStepped(char stepp);
+	void ReturnInitPos();
+	void SetDir(Direction d);
+	Direction GetDir();
+	bool CanMove();
+	void SetCanMove(bool can);
 #pragma endregion
 
 #pragma region Score functions
@@ -45,7 +54,7 @@ struct Player
 #pragma endregion
 
 #pragma region Print
-	void printPlayer(); // La HUD del jugador.
+	void PrintPlayer(); // La HUD del jugador.
 #pragma endregion
 
 };

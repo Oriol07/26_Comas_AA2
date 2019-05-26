@@ -8,7 +8,7 @@ Player::Player()
 	pos.y = 18;
 	lifes = 3;
 	score = 0;
-	aMoure = false;
+	toMove = false;
 }
 
 //Constructor amb posicions i vides.
@@ -31,7 +31,58 @@ Player::~Player()
 **********************************/
 void Player::SetPosition(vec2 position)
 {
-	position = pos;
+	pos = position;
+}
+
+/**********************
+* Retorna la posició. *
+***********************/
+vec2 Player::GetPos()
+{
+	return pos;
+}
+
+/*****************************************
+* Guarda la posició inicial del jugador. *
+******************************************/
+void Player::SetInitPos(vec2 position)
+{
+	initPos = position;
+}
+
+/******************************
+* Retorna la posició inicial. *
+*******************************/
+void Player::ReturnInitPos()
+{
+	pos = initPos;
+}
+
+bool Player::CanMove()
+{
+	return toMove;
+}
+
+void Player::SetCanMove(bool can)
+{
+	toMove = can;
+}
+
+Direction Player::GetDir()
+{
+	return mov;
+}
+
+void Player::SetDir(Direction d)
+{
+	mov = d;
+}
+/*********************************
+* Retorna true si toca l'enemic. *
+**********************************/
+bool Player::TouchEnemy()
+{
+	return (charStepped == BLINKY || charStepped == CLYDE || charStepped == INKY);
 }
 
 /************************************
@@ -69,7 +120,7 @@ void Player::SetLifes(int lifes)
 /********************************
 * Imprimeix la HUD del jugador. *
 *********************************/
-void Player::printPlayer()
+void Player::PrintPlayer()
 {
 
 	//
@@ -77,3 +128,10 @@ void Player::printPlayer()
 	std::cout << "Score: " << GetScore() << "         Lifes: " << lifes << std::endl;
 }
 
+/************************************
+* Determina el caracter trepitjat. *								
+*************************************/
+void Player::SetCharStepped(char stepp)
+{
+	charStepped = stepp;
+}
