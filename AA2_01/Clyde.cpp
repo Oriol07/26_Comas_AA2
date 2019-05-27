@@ -11,11 +11,8 @@
 
 
 Clyde::Clyde()
-
 {
-
 	charStepped = '*';
-
 }
 
 Clyde::~Clyde() {
@@ -36,7 +33,7 @@ void Clyde::SetPosition(vec2 position) {
 
 void Clyde::SetCharStepped(char step) {
 
-	if (step != BLINKY || step != INKY || step != CLYDE || step != JUGADOR) {
+	if (step != BLINKY && step != INKY && step != CLYDE && step != JUGADOR) {
 		charStepped = step;
 	}
 
@@ -65,3 +62,23 @@ void Clyde::SetDir(Direction d)
 	mov = d;
 }
 
+void Clyde::SetInitPos(vec2 position)
+{
+	initPos = position;
+}
+
+/********************************
+* Retorna a la posició inicial. *
+*********************************/
+void Clyde::ReturnInitPos()
+{
+	pos = initPos;
+}
+
+/********************************
+* Retorna la posició inicial	*
+*********************************/
+vec2 Clyde::GetInitPos()
+{
+	return initPos;
+}

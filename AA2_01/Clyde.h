@@ -16,6 +16,7 @@ private:
 	Direction mov;
 	vec2 pos; //(x,y)
 	char charStepped;
+	vec2 initPos; //vector que guardara la posició inicial
 
 
 public:  
@@ -23,8 +24,10 @@ public:
 	Clyde(int posX, int posY, int lifes);   
 
 	void SetPosition(vec2 position);
-
+	void ReturnInitPos();
 	vec2 GetPosition();
+	void SetInitPos(vec2 position);
+	vec2 GetInitPos();
 
 	void SetDir(Direction d);
 

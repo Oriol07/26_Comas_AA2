@@ -26,9 +26,10 @@ int main()
 	Map map = Map(player);
 	bool keyboard[(int)InputKey::COUNT] = {};
 	bool GameOver = false;
+	bool mainMenuFirst = true;
 	int time = 0;
 	
-	GameState myGameState = GameState::GAME;
+	GameState myGameState = GameState::SPLASH_SCREEN;
 	//MAIN LOOP del joc.
 	do
 	{
@@ -58,6 +59,7 @@ int main()
 				if (time == 3)
 				{
 					myGameState = GameState::MAIN_MENU;
+					mainMenuFirst = true;
 				}
 				system("cls");
 
@@ -65,12 +67,32 @@ int main()
 
 			case GameState::MAIN_MENU:
 
+				if (keyboard[(int)InputKey::K_1]) 
+				{
+					myGameState = GameState::GAME;
+				}
+				if (keyboard[(int)InputKey::K_2])
+				{
+					myGameState = GameState::RANKING;
+				}
+
+				if (keyboard[(int)InputKey::K_ESC] || keyboard[(int)InputKey::K_0]) //"ESCAPE" // terminar el juego.
+				{
+					myGameState = GameState::EXIT;
+				}
+				
+				if (mainMenuFirst)
+				{
+					mainMenuFirst = false;
+					std::cout << " ********* MAIN MENU ********* " << std::endl;
+					std::cout << " 1 - PLAY. " << std::endl << " 2 - RANKING. " << std::endl << " 0 - EXIT GAME." << std::endl;
+				}
 			break;
 
 			case GameState::PAUSE:
 				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
 				{
-					myGameState = GameState::MAIN_MENU;
+					myGameState = GameState::GAME;
 				}
 
 				std::cout << " Pause//EN PAUSA.\n PREM 'P' per jugar" << std::endl;
@@ -139,6 +161,7 @@ int main()
 				map.MoveAI(player); // Es mouen els enemics.
 				if (map.PlayerTouchEnemy(player))
 				{
+					map.ResetPosition(player);
 					player.SetLifes(player.GetLifes() - 1);
 					
 					if (player.GetLifes() == 0)
@@ -150,7 +173,6 @@ int main()
 				player.PrintPlayer(); //printtamos HUD/Score
 				break; // Fi case game
 		}
-
 
 		Sleep(TIME); //Refresc del joc cada un segón.
 

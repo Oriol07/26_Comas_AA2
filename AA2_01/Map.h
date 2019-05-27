@@ -46,8 +46,6 @@ class Map
 		bool PlayerTouchEnemy(Player player);
 	#pragma endregion
 
-		int getCols();
-		int getRows();
 	#pragma region Position functions
 		void SetPlayer(vec2 pos);
 		void MovePlayer(Player &player);
@@ -57,6 +55,7 @@ class Map
 		void MoveClyde(Clyde &clyd, Player player);
 		char NextCharPosition(Direction dir, vec2 p);
 		void SetFirstDirBlinky(Blinky &blink);
+		void ResetPosition(Player &player);
 
 	#pragma endregion
 

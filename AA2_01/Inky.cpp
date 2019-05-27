@@ -1,156 +1,97 @@
 #include "Inky.h"
 
-//#include "Enemies.h"
-#include"Player.h"
-#include "Constants.h"
-#include "Types.h"
-#include "Map.h"
-#include "Blinky.h"
-
-
-
+//Constructor
 Inky::Inky()
 {
 	charStepped = '*';
 
 }
 
-
+//Destructor
 Inky::~Inky()
 {
 
 }
 
+/*********************************
+* Marquem la posició del jugador *
+**********************************/
 void Inky::SetPosition(vec2 position)
 {
 	pos = position;
 }
 
+/************************************
+* Guardem el caracter que trepitja. *
+*************************************/
 void Inky::SetCharStepped(char step)
 {
-	if (step != BLINKY || step != INKY || step != CLYDE || step != JUGADOR)
+	if (step != BLINKY && step != INKY && step != CLYDE && step != JUGADOR)
 		charStepped = step;
 	else
 		charStepped = ' ';
 }
+
+/*********************************************
+* Mirem si ha tocat al jugador al trepitjar. *
+**********************************************/
 bool Inky::TouchPlayer()
 {
 	return charStepped == JUGADOR;
 }
 
+/**********************************************
+* Obtenim la direcció a la que s'ha de moure. *
+***********************************************/
 Direction Inky::GetDir()
 {
 	return mov;
 }
 
+/**********************************************
+* Marquem la direcció a la que s'ha de moure. *
+***********************************************/
 void Inky::SetDir(Direction d)
 {
 	mov = d;
 }
 
+/********************************
+* Obtenim el caracter trepitjat *
+*********************************/
 char Inky::GetCharStepped()
 {
 	return charStepped;
 }
+
+/**********************************
+* Obtenim la posició del jugador. *
+***********************************/
 vec2 Inky::GetPosition()
 {
 	return pos;
 }
 
-
-/*
-Inky::Inky()
+/****************************
+* Marca la posició inicial. *
+*****************************/
+void Inky::SetInitPos(vec2 position)
 {
-
-	pos.x = 3;
-	pos.y = 18;
-	lifes = 5;
-	score = 0;
-	playerRef = JUGADOR; //como se mueve igual q el, supongo q vale coger su ref??
-	aMoure = false;
-	gameEnded = false;
+	initPos = position;
 }
 
-
-Inky::~Inky()
+/********************************
+* Retorna a la posició inicial. *
+*********************************/
+void Inky::ReturnInitPos()
 {
-
-
+	pos = initPos;
 }
 
-void Inky::UpdatePosition()
+/******************************
+* Retorna la posició inicial. *
+*******************************/
+vec2 Inky::GetInitPos()
 {
-
-	if (_kbhit())
-	{
-		input = _getch();
-
-		switch (input)
-		{
-		case 'W':
-		case 'w': mov = Direction::UP;//ARRIBA
-			//posY--;
-			aMoure = true;
-			break;
-		case 'S':
-		case 's': mov = Direction::DOWN;	//ABAJO
-			aMoure = true;
-			//posY++;
-			break;
-		case 'a':
-		case 'A': mov = Direction::RIGHT;	//IZQUIERDA
-			aMoure = true;
-			//posX--;
-			break;
-		case 'd':
-		case 'D': mov = Direction::LEFT;	//DERECHA
-			aMoure = true;
-			//posX++;
-			break;
-		case 27:
-			gameEnded = true;
-		default:
-			mov = Direction::ZERO;
-		}
-	}
-
-
+	return initPos;
 }
-
-void Inky::SetPosition(vec2 position)
-{
-	position = pos;
-}
-
-
-int Inky::GetScore()
-{
-	return score; // lo devuelve, pero no lo muestra x pantalla no?S
-}
-
-void Inky::SetScore(int score)
-{
-	this->score = score;
-}
-
-int Inky::GetLifes()
-{
-	return lifes;
-}
-
-void Inky::SetLifes(int lifes)
-{
-	this->lifes = lifes;
-}
-
-void Inky::printInky()
-{
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3); //VERMELL
-	//std::cout << "Score: " << GetScore() << lifes  << std::endl;
-}
-
-bool Inky::isGameEnded()
-{
-	return gameEnded;
-}
-*/

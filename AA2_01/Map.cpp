@@ -54,17 +54,21 @@ Map::Map(Player &jugador)
 			case BLINKY:
 				posMap.x = j; posMap.y = i;
 				b.SetPosition(posMap);
+				b.SetInitPos(b.GetPosition());
 				SetFirstDirBlinky(b);
 				eBlinky.push_back(b);
 				break; 
 			case CLYDE: 
 				posMap.x = j; posMap.y = i;
 				c.SetPosition(posMap);
+				c.SetInitPos(posMap);
 				eClyde.push_back(c);
 				break; 
 			case INKY:
 				posMap.x = j; posMap.y = i;
 				this -> i.SetPosition(posMap);
+				this -> i.SetInitPos(posMap);
+
 				eInky.push_back(this -> i);
 			}
 		}
@@ -81,15 +85,7 @@ Map::~Map()
 }
 
 
-int Map::getCols()
-{
-	return columnas;
-}
 
-int Map::getRows()
-{
-	return filas;
-}
 
 /********************************
 * Posem la posició del jugador. *
@@ -202,20 +198,6 @@ void Map::MovePlayer(Player &player)
 	map[player.GetPos().y][player.GetPos().x] = NOTHING; // Un cop el jugador es mou, actualitzem la anterior ubicació amb ' ';
 	map[newPos.y][newPos.x] = JUGADOR; //  Actualitzem la nova posicio amb la cara del jugador.
 	player.SetPosition(newPos);
-}
-
-/**************************************************************
-* Actualizem tots els moviments dels enemics en els vectors.  *
-***************************************************************/
-void Map::MoveAI(Player player)
-{
-	for (int i = 0; i < eBlinky.size(); i++)
-		MoveBlinky(eBlinky[i]);
-	for (int i = 0; i < eClyde.size(); i++)
-		MoveClyde(eClyde[i], player);
-	for (int i = 0; i < eInky.size(); i++)
-		MoveInky(eInky[i], player);
-		
 }
 
 /******************************************
@@ -380,7 +362,7 @@ void Map::MoveBlinky(Blinky &blink)
 		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
 			newPos = { blink.GetPosition().x - 1, blink.GetPosition().y };
 		else
-			newPos = { getCols() - 1, blink.GetPosition().y };
+			newPos = { columnas - 1, blink.GetPosition().y };
 		break;
 
 	case Direction::RIGHT:
@@ -394,16 +376,13 @@ void Map::MoveBlinky(Blinky &blink)
 		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
 			newPos = { blink.GetPosition().x, blink.GetPosition().y - 1 };
 		else
-			newPos = { blink.GetPosition().x, getRows() };
+			newPos = { blink.GetPosition().x, filas };
 		break;
 
 	case Direction::DOWN:
 		if (!BordeMapa(blink.GetPosition(), blink.GetDir()))
-			if (NoExistMur(blink.GetPosition(), blink.GetDir()))
-			{
-				newPos = { blink.GetPosition().x, blink.GetPosition().y + 1 };
-			}
-			else
+			newPos = { blink.GetPosition().x, blink.GetPosition().y + 1 };
+		else
 				newPos = { blink.GetPosition().x, 1 };
 		break;
 	}
@@ -522,7 +501,7 @@ void Map::MoveClyde(Clyde &clyd, Player player)
 		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
 			newPos = { clyd.GetPosition().x - 1, clyd.GetPosition().y };
 		else
-			newPos = { getCols() - 1, clyd.GetPosition().y };
+			newPos = { columnas - 1, clyd.GetPosition().y };
 		break;
 
 	case Direction::RIGHT:
@@ -536,16 +515,13 @@ void Map::MoveClyde(Clyde &clyd, Player player)
 		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
 			newPos = { clyd.GetPosition().x, clyd.GetPosition().y - 1 };
 		else
-			newPos = { clyd.GetPosition().x, getRows() };
+			newPos = { clyd.GetPosition().x, filas };
 		break;
 
 	case Direction::DOWN:
 		if (!BordeMapa(clyd.GetPosition(), clyd.GetDir()))
-			if (NoExistMur(clyd.GetPosition(), clyd.GetDir()))
-			{
-				newPos = { clyd.GetPosition().x, clyd.GetPosition().y + 1 };
-			}
-			else
+			newPos = { clyd.GetPosition().x, clyd.GetPosition().y + 1 };
+		else
 				newPos = { clyd.GetPosition().x, 1 };
 		break;
 	}
@@ -631,7 +607,7 @@ void Map::MoveInky(Inky &ink, Player player)
 			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
 				newPos = { ink.GetPosition().x - 1, ink.GetPosition().y };
 			else
-				newPos = { getCols() - 1, ink.GetPosition().y };
+				newPos = { columnas - 1, ink.GetPosition().y };
 			break;
 
 		case Direction::RIGHT:
@@ -645,16 +621,13 @@ void Map::MoveInky(Inky &ink, Player player)
 			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
 				newPos = { ink.GetPosition().x, ink.GetPosition().y - 1 };
 			else
-				newPos = { ink.GetPosition().x, getRows() };
+				newPos = { ink.GetPosition().x, filas };
 			break;
 
 		case Direction::DOWN:
 			if (!BordeMapa(ink.GetPosition(), ink.GetDir()))
-				if (NoExistMur(ink.GetPosition(), ink.GetDir()))
-				{
-					newPos = { ink.GetPosition().x, ink.GetPosition().y + 1 };
-				}
-				else
+				newPos = { ink.GetPosition().x, ink.GetPosition().y + 1 };
+			else
 					newPos = { ink.GetPosition().x, 1 };
 			break;
 	}
@@ -668,13 +641,61 @@ void Map::MoveInky(Inky &ink, Player player)
 	ink.SetPosition(newPos); //Actualitzem la nova posició;
 
 }
+
+/**************************************************************
+* Actualizem tots els moviments dels enemics en els vectors.  *
+***************************************************************/
+void Map::MoveAI(Player player)
+{
+	for (int i = 0; i < eBlinky.size(); i++)
+		MoveBlinky(eBlinky[i]);
+	for (int i = 0; i < eClyde.size(); i++)
+		MoveClyde(eClyde[i], player);
+	for (int i = 0; i < eInky.size(); i++)
+		MoveInky(eInky[i], player);
+
+}
+
+/*********************************************************
+* Torna al jugador i els enemics a la posició inicial.	 *
+**********************************************************/
+void Map::ResetPosition(Player &player)
+{
+	for (int i = 0; i < eBlinky.size(); i++)
+	{
+		eBlinky[i].SetCharStepped(map[eBlinky[i].GetInitPos().y][eBlinky[i].GetInitPos().x]);
+		map[eBlinky[i].GetPosition().y][eBlinky[i].GetPosition().x] = NOTHING;
+		eBlinky[i].ReturnInitPos();
+		map[eBlinky[i].GetPosition().y][eBlinky[i].GetPosition().x] = BLINKY;
+	}
+	for (int i = 0; i < eClyde.size(); i++)
+	{
+		eClyde[i].SetCharStepped(map[eClyde[i].GetInitPos().y][eClyde[i].GetInitPos().x]);
+		map[eClyde[i].GetPosition().y][eClyde[i].GetPosition().x] = NOTHING;
+		eClyde[i].ReturnInitPos();
+		map[eClyde[i].GetPosition().y][eClyde[i].GetPosition().x] = CLYDE;
+	}
+
+	for (int i = 0; i < eInky.size(); i++)
+	{
+		eInky[i].SetCharStepped(map[eInky[i].GetInitPos().y][eInky[i].GetInitPos().x]);
+		map[eInky[i].GetPosition().y][eInky[i].GetPosition().x] = NOTHING;
+		eInky[i].ReturnInitPos();
+		map[eInky[i].GetPosition().y][eInky[i].GetPosition().x] = INKY;
+	}
+		
+	map[player.GetPos().y][player.GetPos().x] = NOTHING;
+	player.ReturnInitPos();
+	map[player.GetPos().y][player.GetPos().x] = JUGADOR;
+}
+
 /********************************************
 * Print dels elements del mapa per consola. *
 *********************************************/
 void Map::PrintMap()
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //Lletres de color blanc, per el titol.
-	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl << std::endl << "       ";
+	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl << std::endl << "    ";
 	for (int i = 1; i < filas + 1; i++)
 	{
 		for (int j = 0; j < columnas; j++)
@@ -706,7 +727,7 @@ void Map::PrintMap()
 			std::cout << map[i][j];
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0); // La resta color dark.
 		}
-		std::cout << std::endl << "       ";
+		std::cout << std::endl << "    ";
 	}
 	std::cout << std::endl;
 }

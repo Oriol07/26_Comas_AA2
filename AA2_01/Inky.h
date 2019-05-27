@@ -15,6 +15,7 @@ private:
 #pragma region Variables
 	Direction mov; // Enum que conté el tipus de moviment a realitzar
 	vec2 pos; // Variable que tindra guardades les posicions en els eixos de les 'x' i 'y'
+	vec2 initPos; //vector que guardara la posició inicial
 
 	char charStepped;
 #pragma endregion
@@ -29,7 +30,9 @@ public:
 	//char NextCharPosition(Direction dir);
 	void SetPosition(vec2 position);
 	vec2 GetPosition();
-
+	void SetInitPos(vec2 position);
+	void ReturnInitPos();
+	vec2 GetInitPos();
 
 	void SetDir(Direction d);
 	Direction GetDir();

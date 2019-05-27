@@ -23,7 +23,7 @@ void Blinky::SetPosition(vec2 position)
 
 void Blinky::SetCharStepped(char step)
 {
-	if (step != BLINKY || step != INKY || step != CLYDE || step != JUGADOR)
+	if (step != BLINKY && step != INKY && step != CLYDE)
 		charStepped = step;
 	else
 		charStepped = ' ';
@@ -52,5 +52,23 @@ vec2 Blinky::GetPosition()
 	return pos;
 }
 
+void Blinky::SetInitPos(vec2 position)
+{	
+	initPos = position;
+}
 
+/********************************
+* Retorna a la posició inicial. *
+*********************************/
+void Blinky::ReturnInitPos()
+{
+	pos = initPos;
+}
 
+/******************************
+* Retorna la posició inicial. *
+*******************************/
+vec2 Blinky::GetInitPos()
+{
+	return initPos;
+}
