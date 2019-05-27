@@ -549,7 +549,7 @@ void Map::MoveClyde(Clyde &clyd, Player player)
 				newPos = { clyd.GetPosition().x, 1 };
 		break;
 	}
-	if (clyd.GetCharStepped() != CLYDE || clyd.GetCharStepped() != JUGADOR || clyd.GetCharStepped() != BLINKY || clyd.GetCharStepped() != INKY)
+	if (NextCharPosition(clyd.GetDir(), clyd.GetPosition()) != CLYDE || NextCharPosition(clyd.GetDir(), clyd.GetPosition()) != JUGADOR || NextCharPosition(clyd.GetDir(), clyd.GetPosition()) != BLINKY || NextCharPosition(clyd.GetDir(), clyd.GetPosition()) != INKY)
 		map[clyd.GetPosition().y][clyd.GetPosition().x] = clyd.GetCharStepped(); // Abans de que el Binky es mogui, actualitzem la posicio amb el que hi havia anteriorment.;
 
 	clyd.SetCharStepped(NextCharPosition(clyd.GetDir(), clyd.GetPosition())); // Guardarem el que trepitjara, a menys que sigui un altre persona;
@@ -674,7 +674,7 @@ void Map::MoveInky(Inky &ink, Player player)
 void Map::PrintMap()
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //Lletres de color blanc, per el titol.
-	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl;
+	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl << std::endl << "       ";
 	for (int i = 1; i < filas + 1; i++)
 	{
 		for (int j = 0; j < columnas; j++)
@@ -706,6 +706,7 @@ void Map::PrintMap()
 			std::cout << map[i][j];
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0); // La resta color dark.
 		}
-		std::cout << std::endl;
+		std::cout << std::endl << "       ";
 	}
+	std::cout << std::endl;
 }

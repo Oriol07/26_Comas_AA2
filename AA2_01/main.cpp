@@ -24,102 +24,103 @@ int main()
 	//Variables
 	Player player;
 	Map map = Map(player);
-	bool game = true;
-	bool Init = true;
-	bool MainMenu = false;
-	bool Play = false;
-	bool Pause = false;
+	bool keyboard[(int)InputKey::COUNT] = {};
 	bool GameOver = false;
 	int time = 0;
+	
+	GameState myGameState = GameState::GAME;
 	//MAIN LOOP del joc.
 	do
 	{
-		while (Init)
+		//INPUT HANDLLER
+		keyboard[(int)InputKey::K_ESC] = GetAsyncKeyState(VK_ESCAPE);
+		keyboard[(int)InputKey::K_P] = GetAsyncKeyState(0x50);
+		keyboard[(int)InputKey::K_UP] = GetAsyncKeyState(VK_UP);
+		keyboard[(int)InputKey::K_DOWN] = GetAsyncKeyState(VK_DOWN);
+		keyboard[(int)InputKey::K_LEFT] = GetAsyncKeyState(VK_LEFT);
+		keyboard[(int)InputKey::K_RIGHT] = GetAsyncKeyState(VK_RIGHT);
+		keyboard[(int)InputKey::K_SPACE] = GetAsyncKeyState(VK_SPACE);
+		keyboard[(int)InputKey::K_0] = GetAsyncKeyState(0x30);
+		keyboard[(int)InputKey::K_1] = GetAsyncKeyState(0x31);
+		keyboard[(int)InputKey::K_2] = GetAsyncKeyState(0x32);
+
+
+		switch (myGameState)
 		{
-			std::cout << " ********* SPLASHSCREEN ********* " << std::endl;
-			Sleep(200);
-			std::cout << " Welcome to PACMAN";
-			Sleep(200);
-			std::cout << "."; Sleep(200); std::cout << "."; Sleep(200); std::cout << "."; Sleep(200);
-			time++;
-			if (GetAsyncKeyState(VK_SPACE))
-			{
-				Init = false;
-				Play = true;
-			}
-			if (GetAsyncKeyState(VK_ESCAPE)) //"ESCAPE" // terminar el juego.
-			{
-				Init = false;
-				game = false;
-			}
+			case GameState::SPLASH_SCREEN:
+				std::cout << " ********* SPLASHSCREEN ********* " << std::endl;
+				Sleep(200);
+				std::cout << " Welcome to PACMAN";
+				Sleep(200);
+				std::cout << "."; Sleep(200); std::cout << "."; Sleep(200); std::cout << "."; Sleep(200);
+				time++;
 
-			if (time == 3)
-			{
-				Init = false;
-				Play = true;
-			}
-			system("cls");
+				if (time == 3)
+				{
+					myGameState = GameState::MAIN_MENU;
+				}
+				system("cls");
 
-		}
+			break; // Fi del case SplashScreen 
 
-		while (Pause)
-		{
-			if (GetAsyncKeyState(VK_ESCAPE)) //"ESCAPE" // terminar el juego.
-			{
-				Init = false;
-				game = false;
-			}
+			case GameState::MAIN_MENU:
 
-			std::cout << " Pause//EN PAUSA.\n PREM 'P' per jugar" << std::endl;
-			if (GetAsyncKeyState(0x50))
-			{
-				Play = true;
-				Pause = false;
-				Sleep(1000);
-			}
-			system("cls");
-		}
+			break;
 
-		while (Play)
-		{
+			case GameState::PAUSE:
+				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
+				{
+					myGameState = GameState::MAIN_MENU;
+				}
 
+				std::cout << " Pause//EN PAUSA.\n PREM 'P' per jugar" << std::endl;
+				if (keyboard[(int)InputKey::K_SPACE])
+				{
+					myGameState = GameState::GAME;
+					Sleep(1000);
+				}
+				system("cls");
+				
+			break; // Fi case Pausa
+
+			case GameState::GAME:
 				//Detecta el event del teclat, i determina quina sera la seguent posicio del jugador 
 				if (KEYPRESSED)
 				{
 
-					if (GetAsyncKeyState(VK_UP))
+					if (keyboard[(int)InputKey::K_UP])
 					{
 						player.SetDir(Direction::UP); //ARRIBA
 						player.SetCanMove(true);
 					}
-					if (GetAsyncKeyState(VK_DOWN))
+					if (keyboard[(int)InputKey::K_DOWN])
 					{
 						player.SetDir(Direction::DOWN);	//ABAJO
 						player.SetCanMove(true);
 					}
-					if (GetAsyncKeyState(VK_RIGHT))
+					if (keyboard[(int)InputKey::K_RIGHT])
 					{
 						player.SetDir(Direction::RIGHT);	//IZQUIERDA
 						player.SetCanMove(true);
 					}
-					if (GetAsyncKeyState(VK_LEFT))
+					if (keyboard[(int)InputKey::K_LEFT])
 					{
 						player.SetDir(Direction::LEFT);	//DERECHA
 						player.SetCanMove(true);
 					}
-					if (GetAsyncKeyState(VK_ESCAPE)) //"ESCAPE" // terminar el juego.
-					{
-						Play = false;
-						game = false;
-					}
+
 
 				}
+				else player.SetDir(Direction::ZERO);					
 				
-				else player.SetDir(Direction::ZERO);
-				if (GetAsyncKeyState(0x50))
+				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
+					{
+						myGameState = GameState::MAIN_MENU;
+					}
+
+				if (keyboard[(int)InputKey::K_P])
 				{
-					Play = false;
-					Pause = true;
+					myGameState = GameState::PAUSE;
 					Sleep(500);
 					system("cls");
 				}
@@ -141,17 +142,19 @@ int main()
 					player.SetLifes(player.GetLifes() - 1);
 					
 					if (player.GetLifes() == 0)
-						Play = false;
+						myGameState = GameState::MAIN_MENU;
 				}
-				Sleep(TIME); //Refresc del joc cada un segón.
 				system("cls"); // limpiamos pantalla
 				std::cout << "********* PLAY *********" << std::endl;
 				map.PrintMap(); //printamoss MAPA
 				player.PrintPlayer(); //printtamos HUD/Score
-			
+				break; // Fi case game
 		}
 
-	} while (game);
+
+		Sleep(TIME); //Refresc del joc cada un segón.
+
+	} while (myGameState != GameState::EXIT);
 
 	system("cls"); // limpiamos pantalla
 	std::cout << "Joc acabat" << std::endl;

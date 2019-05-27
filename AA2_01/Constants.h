@@ -13,4 +13,4 @@ constexpr char CLYDE = '$';
 constexpr char POWER_UP = '0';
 
 //EVENT
-#define KEYPRESSED (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_UP) || GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(VK_LEFT))
+#define KEYPRESSED (!keyboard[(int)InputKey::K_UP] || !keyboard[(int)InputKey::K_DOWN] || !keyboard[(int)InputKey::K_RIGHT] || !keyboard[(int)InputKey::K_LEFT])
