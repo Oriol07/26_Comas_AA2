@@ -17,7 +17,8 @@ private:
 	bool toMove; //Aquesta condicio es posara a true, cada cop que el jugador premi una tecla, així el moviment del jugador només funcióna quan es manté la tecla presa.
 	char charStepped; //character que passa per sobre.
 	vec2 initPos;
-
+	bool hasPowerUp;
+	int powerUpTime;
 #pragma endregion
 
 public:
@@ -30,31 +31,40 @@ public:
 	~Player();
 #pragma endregion
 
-#pragma region Position and move functions
-	void SetPosition(vec2 position);
-	vec2 GetPos(); 
-	void SetInitPos(vec2 position);
-	bool TouchEnemy(); //comprova si toca l'enemic.
-	void SetCharStepped(char stepp);
-	void ReturnInitPos();
-	void SetDir(Direction d);
-	Direction GetDir();
-	bool CanMove();
-	void SetCanMove(bool can);
+#pragma region Position/Collision functions
+	void setPosition(vec2 position);
+	vec2 getPos(); 
+	void setInitPos(vec2 position);
+	bool touchEnemy(); //comprova si toca l'enemic.
+	bool touchPowerUp();
+	void setCharStepped(char stepp);
+	char getCharStepped();
+	void returnInitPos();
+	void setDir(Direction d);
+	Direction getDir();
+	bool canMove();
+	void setCanMove(bool can);
 #pragma endregion
 
 #pragma region Score functions
-	int GetScore();
-	void SetScore(int score);
+	int getScore();
+	void setScore(int score);
+	void setHasPowerUp(bool powerUp);
+	bool getHasPowerUp();
 #pragma endregion
 
 #pragma region Lifes functions
-	int GetLifes();
-	void SetLifes(int lifes);
+	int getLifes();
+	void setLifes(int lifes);
+#pragma endregion
+
+#pragma region Time functions
+	void setTimePowerUp(int time);
+	int getTimePowerUp();
 #pragma endregion
 
 #pragma region Print
-	void PrintPlayer(); // La HUD del jugador.
+	void printPlayer(); // La HUD del jugador.
 #pragma endregion
 
 };

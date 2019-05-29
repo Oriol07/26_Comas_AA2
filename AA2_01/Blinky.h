@@ -1,6 +1,5 @@
 #pragma once
 
-#include <conio.h>
 #include <iostream>
 #include <Windows.h>
 #include "Types.h"
@@ -14,33 +13,35 @@ class Blinky
 		Direction mov; // Enum que conté el tipus de moviment a realitzar
 		vec2 pos; // Variable que tindra guardades les posicions en els eixos de les 'x' i 'y'
 		vec2 initPos; //vector que guardara la posició inicial
-
-		char charStepped;
+		bool dead; //bolea que ens dira si a mort o no
+		char charStepped; // char que contindra el caracter que té a sota.
 	#pragma endregion
 
 
 	public:
+	#pragma region Constructor/Destructor
 		Blinky();
-		Blinky(int posX, int posY, int lifes); // Per si volem posar nosaltres la posició, i el numero de vides.
-
-	#pragma region Position functions
-		//void UpdatePosition(); //On es fan els events de input
-		//char NextCharPosition(Direction dir);
-		void SetPosition(vec2 position);
-		vec2 GetPosition();
-		void ReturnInitPos();
-		void SetInitPos(vec2 position);
-		void SetDir(Direction d);
-		Direction GetDir();
-		vec2 GetInitPos();
-
-		void SetCharStepped(char a);
-		char GetCharStepped();
-		bool TouchPlayer();
-
-	#pragma region Destructor
 		~Blinky();
-
 	#pragma endregion
+
+	#pragma region Position/Collision functions
+		void setPosition(vec2 position);
+		vec2 getPosition();
+		void returnInitPos();
+		void setInitPos(vec2 position);
+		void setDir(Direction d);
+		Direction getDir();
+		vec2 getInitPos();
+		void setCharStepped(char a);
+		char getCharStepped();
+		bool touchPlayer();
+	#pragma endregion
+
+	#pragma region Other functions
+		bool isDead();
+		void setDead(bool d);
+	#pragma endregion
+
+
 };
 

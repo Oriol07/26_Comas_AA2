@@ -1,6 +1,9 @@
 
 #include "Player.h"
 
+///Funcions de la class Player
+
+#pragma region Constructor/Destructor
 //Constructor auto
 Player::Player()
 {
@@ -9,27 +12,22 @@ Player::Player()
 	lifes = 3;
 	score = 0;
 	toMove = false;
+	hasPowerUp = false;
 }
 
-//Constructor amb posicions i vides.
-Player::Player(int posX, int posY, int lifes)
-{
-	pos.x = posX;
-	pos.y = posY;
-	score = 0;
-	this->lifes = lifes; 
-}
 
 //Destructor
 Player::~Player()
 {
 }
 
+#pragma endregion
 
+#pragma region Postion/Collision functions
 /*********************************
 * Coloca la posició del jugador. *
 **********************************/
-void Player::SetPosition(vec2 position)
+void Player::setPosition(vec2 position)
 {
 	pos = position;
 }
@@ -37,7 +35,7 @@ void Player::SetPosition(vec2 position)
 /**********************
 * Retorna la posició. *
 ***********************/
-vec2 Player::GetPos()
+vec2 Player::getPos()
 {
 	return pos;
 }
@@ -45,7 +43,7 @@ vec2 Player::GetPos()
 /*****************************************
 * Guarda la posició inicial del jugador. *
 ******************************************/
-void Player::SetInitPos(vec2 position)
+void Player::setInitPos(vec2 position)
 {
 	initPos = position;
 }
@@ -53,42 +51,82 @@ void Player::SetInitPos(vec2 position)
 /******************************
 * Retorna la posició inicial. *
 *******************************/
-void Player::ReturnInitPos()
+void Player::returnInitPos()
 {
 	pos = initPos;
 }
 
-bool Player::CanMove()
+/**************************************
+* Retorna si el jugador es pot moure. *
+***************************************/
+bool Player::canMove()
 {
 	return toMove;
 }
 
-void Player::SetCanMove(bool can)
+/********************************
+* Definim si es pot moure o no. *
+*********************************/
+void Player::setCanMove(bool can)
 {
 	toMove = can;
 }
 
-Direction Player::GetDir()
+/***********************
+* Retorna la direcció. *
+************************/
+Direction Player::getDir()
 {
 	return mov;
 }
 
-void Player::SetDir(Direction d)
+/***********************
+* Cambia la direcció.  *
+************************/
+void Player::setDir(Direction d)
 {
 	mov = d;
 }
+
 /*********************************
 * Retorna true si toca l'enemic. *
 **********************************/
-bool Player::TouchEnemy()
+bool Player::touchEnemy()
 {
 	return (charStepped == BLINKY || charStepped == CLYDE || charStepped == INKY);
 }
 
 /************************************
+* Retorna true si toca el Power_UP. *
+*************************************/
+bool Player::touchPowerUp()
+{
+	return charStepped == POWER_UP;
+}
+
+/************************************
+* Determina el caracter trepitjat.  *
+*************************************/
+void Player::setCharStepped(char stepp)
+{
+	charStepped = stepp;
+}
+
+/******************************
+* Obtenim el char trepitjat.  *
+*******************************/
+char Player::getCharStepped()
+{
+	return charStepped;
+}
+
+#pragma endregion
+
+#pragma region Score functions
+/************************************
 * Retorna la puntuació del jugador. *
 *************************************/
-int Player::GetScore()
+int Player::getScore()
 {
 	return score;
 }
@@ -96,15 +134,34 @@ int Player::GetScore()
 /***********************************
 * Cambia la puntuació del jugador. *
 ************************************/
-void Player::SetScore(int score)
+void Player::setScore(int score)
 {
 	this->score = score;
 }
 
+/****************************************************
+* Mirem si el jugador té el power up activat o no.  *
+*****************************************************/
+bool Player::getHasPowerUp()
+{
+	return hasPowerUp;
+}
+
+/********************************************
+* Determinem si el jugador té un power up.	*
+*********************************************/
+void Player::setHasPowerUp(bool pU)
+{
+	hasPowerUp = pU;
+}
+
+#pragma endregion
+
+#pragma region Lifes functions
 /*******************************
 * Retorna la vida del jugador. *
 ********************************/
-int Player::GetLifes()
+int Player::getLifes()
 {
 	return lifes;
 }
@@ -112,26 +169,41 @@ int Player::GetLifes()
 /******************************
 * Cambia la vida del jugador. *
 *******************************/
-void Player::SetLifes(int lifes)
+void Player::setLifes(int lifes)
 {
 	this->lifes = lifes;
 }
 
+#pragma endregion
+
+#pragma region Time functions
+/********************************************************
+* Determinem el temps que queda per acabar el PowerUp	*
+*********************************************************/
+void Player::setTimePowerUp(int time)
+{
+	powerUpTime = time;
+}
+
+/********************************************************
+* Obtenim el temps que queda per acabar el PowerUp.		*
+*********************************************************/
+int Player::getTimePowerUp()
+{
+	return powerUpTime;
+}
+
+#pragma endregion
+
+#pragma region Print functions
 /********************************
 * Imprimeix la HUD del jugador. *
 *********************************/
-void Player::PrintPlayer()
+void Player::printPlayer()
 {
 
 	//
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);
-	std::cout << "Score: " << GetScore() << "         Lifes: " << lifes << std::endl;
+	std::cout << "Score: " << getScore() << "         Lifes: " << lifes << std::endl;
 }
-
-/************************************
-* Determina el caracter trepitjat. *								
-*************************************/
-void Player::SetCharStepped(char stepp)
-{
-	charStepped = stepp;
-}
+#pragma endregion

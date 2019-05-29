@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr int TIME = 400; //Temps de refresc 
+constexpr int TIME = 500; //Temps de refresc 
 
 //Dibuixos 
 constexpr char JUGADOR = '>'; //Dibuix jugador

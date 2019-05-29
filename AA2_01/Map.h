@@ -25,11 +25,11 @@ class Map
 		Inky i;
 		Clyde c;
 		vec2 posMap;
-
+		char ** map;// Contindra tots els elements del tauler en un array dinamic 2D.
 	#pragma endregion 
 	
  public:
-	 char ** map;// Contindra tots els elements del tauler en un array dinamic 2D.
+
 	#pragma region Constructor
 		Map(Player &jugador);
 	#pragma endregion
@@ -39,27 +39,27 @@ class Map
 	#pragma endregion
 	
 	#pragma region Collision functions
-		bool BordeMapa(vec2 pos, Direction dir);
-		bool ExistPunt(vec2 pos, Direction dir);
-		bool NoExistMur(vec2 pos, Direction dir);
-		bool TouchEnemy(vec2 pos, Direction dir);
-		bool PlayerTouchEnemy(Player player);
+		bool bordeMapa(vec2 pos, Direction dir);
+		bool existPunt(vec2 pos, Direction dir);
+		bool noExistMur(vec2 pos, Direction dir);
+		bool playertouchEnemy(Player player);
 	#pragma endregion
 
 	#pragma region Position functions
-		void SetPlayer(vec2 pos);
-		void MovePlayer(Player &player);
-		void MoveAI(Player player);
-		void MoveBlinky(Blinky &blink);
-		void MoveInky(Inky &ink, Player player);
-		void MoveClyde(Clyde &clyd, Player player);
-		char NextCharPosition(Direction dir, vec2 p);
-		void SetFirstDirBlinky(Blinky &blink);
-		void ResetPosition(Player &player);
+		void setPlayer(vec2 pos);
+		void movePlayer(Player &player);
+		void moveAI(Player player);
+		void moveBlinky(Blinky &blink);
+		void moveInky(Inky &ink, Player player);
+		void moveClyde(Clyde &clyd, Player player);
+		char nextCharPosition(Direction dir, vec2 p);
+		void setFirstDirBlinky(Blinky &blink);
+		void resetPosition(Player &player);
 
 	#pragma endregion
 
 	#pragma region Read and Print function
-		void PrintMap();
+		void printMap(Player player);
+		void resetMap();
 	#pragma endregion
 };

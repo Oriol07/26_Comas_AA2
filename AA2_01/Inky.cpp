@@ -1,10 +1,13 @@
 #include "Inky.h"
 
+///Funcions de la class Blinky
+
+#pragma region Constructor/Destructor
 //Constructor
 Inky::Inky()
 {
 	charStepped = '*';
-
+	dead = false;
 }
 
 //Destructor
@@ -12,11 +15,13 @@ Inky::~Inky()
 {
 
 }
+#pragma endregion
 
+#pragma region Position/Collision functions
 /*********************************
 * Marquem la posició del jugador *
 **********************************/
-void Inky::SetPosition(vec2 position)
+void Inky::setPosition(vec2 position)
 {
 	pos = position;
 }
@@ -24,7 +29,7 @@ void Inky::SetPosition(vec2 position)
 /************************************
 * Guardem el caracter que trepitja. *
 *************************************/
-void Inky::SetCharStepped(char step)
+void Inky::setCharStepped(char step)
 {
 	if (step != BLINKY && step != INKY && step != CLYDE && step != JUGADOR)
 		charStepped = step;
@@ -35,7 +40,7 @@ void Inky::SetCharStepped(char step)
 /*********************************************
 * Mirem si ha tocat al jugador al trepitjar. *
 **********************************************/
-bool Inky::TouchPlayer()
+bool Inky::touchPlayer()
 {
 	return charStepped == JUGADOR;
 }
@@ -43,7 +48,7 @@ bool Inky::TouchPlayer()
 /**********************************************
 * Obtenim la direcció a la que s'ha de moure. *
 ***********************************************/
-Direction Inky::GetDir()
+Direction Inky::getDir()
 {
 	return mov;
 }
@@ -51,7 +56,7 @@ Direction Inky::GetDir()
 /**********************************************
 * Marquem la direcció a la que s'ha de moure. *
 ***********************************************/
-void Inky::SetDir(Direction d)
+void Inky::setDir(Direction d)
 {
 	mov = d;
 }
@@ -59,7 +64,7 @@ void Inky::SetDir(Direction d)
 /********************************
 * Obtenim el caracter trepitjat *
 *********************************/
-char Inky::GetCharStepped()
+char Inky::getCharStepped()
 {
 	return charStepped;
 }
@@ -67,7 +72,7 @@ char Inky::GetCharStepped()
 /**********************************
 * Obtenim la posició del jugador. *
 ***********************************/
-vec2 Inky::GetPosition()
+vec2 Inky::getPosition()
 {
 	return pos;
 }
@@ -75,7 +80,7 @@ vec2 Inky::GetPosition()
 /****************************
 * Marca la posició inicial. *
 *****************************/
-void Inky::SetInitPos(vec2 position)
+void Inky::setInitPos(vec2 position)
 {
 	initPos = position;
 }
@@ -83,7 +88,7 @@ void Inky::SetInitPos(vec2 position)
 /********************************
 * Retorna a la posició inicial. *
 *********************************/
-void Inky::ReturnInitPos()
+void Inky::returnInitPos()
 {
 	pos = initPos;
 }
@@ -91,7 +96,20 @@ void Inky::ReturnInitPos()
 /******************************
 * Retorna la posició inicial. *
 *******************************/
-vec2 Inky::GetInitPos()
+vec2 Inky::getInitPos()
 {
 	return initPos;
 }
+
+#pragma endregion
+
+#pragma region Other functions
+bool Inky::isDead()
+{
+	return dead;
+}
+void Inky::setDead(bool d)
+{
+	dead = d;
+}
+#pragma endregion

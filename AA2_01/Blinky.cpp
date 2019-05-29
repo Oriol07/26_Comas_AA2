@@ -1,58 +1,61 @@
-
-
 #include "Blinky.h"
 
+///Funcions de la class Blinky
 
-
+#pragma region Constructor/Destructor
+//Constructor
 Blinky::Blinky()
 {
 	charStepped = '*';
+	dead = false;
 
 }
 
-
+//Destructor
 Blinky::~Blinky()
 {
 
 }
+#pragma endregion
 
-void Blinky::SetPosition(vec2 position)
+#pragma region Position/Collision functions
+void Blinky::setPosition(vec2 position)
 {
 	pos = position;
 }
 
-void Blinky::SetCharStepped(char step)
+void Blinky::setCharStepped(char step)
 {
 	if (step != BLINKY && step != INKY && step != CLYDE)
 		charStepped = step;
 	else
 		charStepped = ' ';
 }
-bool Blinky::TouchPlayer()
+bool Blinky::touchPlayer()
 {
 	return charStepped == JUGADOR;
 }
 
-Direction Blinky::GetDir()
+Direction Blinky::getDir()
 {
 	return mov;
 }
 
-void Blinky::SetDir(Direction d)
+void Blinky::setDir(Direction d)
 {
 	mov = d;
 }
 
-char Blinky::GetCharStepped()
+char Blinky::getCharStepped()
 {
 	return charStepped;
 }
-vec2 Blinky::GetPosition()
+vec2 Blinky::getPosition()
 {
 	return pos;
 }
 
-void Blinky::SetInitPos(vec2 position)
+void Blinky::setInitPos(vec2 position)
 {	
 	initPos = position;
 }
@@ -60,7 +63,7 @@ void Blinky::SetInitPos(vec2 position)
 /********************************
 * Retorna a la posició inicial. *
 *********************************/
-void Blinky::ReturnInitPos()
+void Blinky::returnInitPos()
 {
 	pos = initPos;
 }
@@ -68,7 +71,20 @@ void Blinky::ReturnInitPos()
 /******************************
 * Retorna la posició inicial. *
 *******************************/
-vec2 Blinky::GetInitPos()
+vec2 Blinky::getInitPos()
 {
 	return initPos;
 }
+
+#pragma endregion
+
+#pragma region Other functions
+bool Blinky::isDead()
+{
+	return dead;
+}
+void Blinky::setDead(bool d)
+{
+	dead = d;
+}
+#pragma endregion

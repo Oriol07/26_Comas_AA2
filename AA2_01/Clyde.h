@@ -1,6 +1,5 @@
 #pragma once
 
-#include <conio.h>
 #include <iostream>
 #include <Windows.h>
 #include "Types.h"
@@ -11,34 +10,39 @@
 class Clyde
 {
 
-private:
-#pragma region Variables
-	Direction mov;
+	private:
+	#pragma region Variables
+	Direction mov; // Enum que conté el tipus de moviment a realitzar
 	vec2 pos; //(x,y)
-	char charStepped;
+	char charStepped; // char que contindra el caracter que té a sota.
 	vec2 initPos; //vector que guardara la posició inicial
+	bool dead; //bolea que ens dira si a mort o no
+	#pragma endregion
 
+	public:  
 
-public:  
-	Clyde();
-	Clyde(int posX, int posY, int lifes);   
+	#pragma region Constructor/Destructoor
+		Clyde();
+		~Clyde();
+	#pragma endregion
 
-	void SetPosition(vec2 position);
-	void ReturnInitPos();
-	vec2 GetPosition();
-	void SetInitPos(vec2 position);
-	vec2 GetInitPos();
+	#pragma region Position/Collision functions
+			void setPosition(vec2 position);
+			vec2 getPosition();
+			void returnInitPos();
+			void setInitPos(vec2 position);
+			void setDir(Direction d);
+			Direction getDir();
+			vec2 getInitPos();
 
-	void SetDir(Direction d);
+			void setCharStepped(char a);
+			char getCharStepped();
+			bool touchPlayer();
+	#pragma endregion
 
-	Direction GetDir();
-
-	void SetCharStepped(char step);
-	
-	char GetCharStepped();
-
-	bool TouchPlayer();
-
-	~Clyde();
+	#pragma region Other functions
+			bool isDead();
+			void setDead(bool d);
+	#pragma endregion
 
 };

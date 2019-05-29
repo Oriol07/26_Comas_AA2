@@ -1,8 +1,7 @@
 /***************************************************
-* Grup 26.								           *
-* - Desirèe Moreno						           *
+* Grup 26.								      	   *
 * - Oriol Comas Llurià                             *
-* Github: https://github.com/Oriol07/Grup26_AA2_1  *
+* Github: https://github.com/Oriol07/26_Comas_AA2  *
 ****************************************************/
 
 #include <iostream>
@@ -25,15 +24,17 @@ int main()
 	Player player;
 	Map map = Map(player);
 	bool keyboard[(int)InputKey::COUNT] = {};
-	bool GameOver = false;
+	bool gameOver = false;
 	bool mainMenuFirst = true;
 	int time = 0;
+	int timeMili = 0;
 	
 	GameState myGameState = GameState::SPLASH_SCREEN;
-	//MAIN LOOP del joc.
+
+	///MAIN LOOP del joc.
 	do
 	{
-		//INPUT HANDLLER
+		///Detecció de inputs.
 		keyboard[(int)InputKey::K_ESC] = GetAsyncKeyState(VK_ESCAPE);
 		keyboard[(int)InputKey::K_P] = GetAsyncKeyState(0x50);
 		keyboard[(int)InputKey::K_UP] = GetAsyncKeyState(VK_UP);
@@ -49,14 +50,17 @@ int main()
 		switch (myGameState)
 		{
 			case GameState::SPLASH_SCREEN:
+				///DRAW
 				std::cout << " ********* SPLASHSCREEN ********* " << std::endl;
 				Sleep(200);
 				std::cout << " Welcome to PACMAN";
 				Sleep(200);
 				std::cout << "."; Sleep(200); std::cout << "."; Sleep(200); std::cout << "."; Sleep(200);
+
+				///UPDATE
 				time++;
 
-				if (time == 3)
+				if (time == 3) // Als 3 segons passarem al main menu
 				{
 					myGameState = GameState::MAIN_MENU;
 					mainMenuFirst = true;
@@ -66,10 +70,13 @@ int main()
 			break; // Fi del case SplashScreen 
 
 			case GameState::MAIN_MENU:
-
+				///EVENTS DE TECLAT
 				if (keyboard[(int)InputKey::K_1]) 
 				{
 					myGameState = GameState::GAME;
+					player.setLifes(3);
+					player.setScore(0);
+					system("cls");
 				}
 				if (keyboard[(int)InputKey::K_2])
 				{
@@ -80,64 +87,76 @@ int main()
 				{
 					myGameState = GameState::EXIT;
 				}
-				
+				/// DRAW
 				if (mainMenuFirst)
 				{
 					mainMenuFirst = false;
 					std::cout << " ********* MAIN MENU ********* " << std::endl;
 					std::cout << " 1 - PLAY. " << std::endl << " 2 - RANKING. " << std::endl << " 0 - EXIT GAME." << std::endl;
 				}
-			break;
+			break; // break de case Main Menu
 
 			case GameState::PAUSE:
+
+				///Events de teclat
 				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
 				{
-					myGameState = GameState::GAME;
+					mainMenuFirst = true;
+					myGameState = GameState::MAIN_MENU;
+					map.resetPosition(player);
+					map.resetMap();
+					
 				}
 
-				std::cout << " Pause//EN PAUSA.\n PREM 'P' per jugar" << std::endl;
 				if (keyboard[(int)InputKey::K_SPACE])
 				{
 					myGameState = GameState::GAME;
 					Sleep(1000);
+					system("cls");
 				}
+				///DRAW 
+				std::cout << " ******* PAUSE ******** \n Press SPACE to continue" << std::endl;
 				system("cls");
 				
 			break; // Fi case Pausa
 
 			case GameState::GAME:
-				//Detecta el event del teclat, i determina quina sera la seguent posicio del jugador 
+				///Events de Teclat
 				if (KEYPRESSED)
 				{
 
 					if (keyboard[(int)InputKey::K_UP])
 					{
-						player.SetDir(Direction::UP); //ARRIBA
-						player.SetCanMove(true);
+						player.setDir(Direction::UP); //ARRIBA
+						player.setCanMove(true);
 					}
 					if (keyboard[(int)InputKey::K_DOWN])
 					{
-						player.SetDir(Direction::DOWN);	//ABAJO
-						player.SetCanMove(true);
+						player.setDir(Direction::DOWN);	//ABAJO
+						player.setCanMove(true);
 					}
 					if (keyboard[(int)InputKey::K_RIGHT])
 					{
-						player.SetDir(Direction::RIGHT);	//IZQUIERDA
-						player.SetCanMove(true);
+						player.setDir(Direction::RIGHT);	//IZQUIERDA
+						player.setCanMove(true);
 					}
 					if (keyboard[(int)InputKey::K_LEFT])
 					{
-						player.SetDir(Direction::LEFT);	//DERECHA
-						player.SetCanMove(true);
+						player.setDir(Direction::LEFT);	//DERECHA
+						player.setCanMove(true);
 					}
 
 
 				}
-				else player.SetDir(Direction::ZERO);					
+				else player.setDir(Direction::ZERO); // En cas de que cap input de moviment sigui true posem la direcció quieta.					
 				
 				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
 					{
+						mainMenuFirst = true;
 						myGameState = GameState::MAIN_MENU;
+						map.resetPosition(player);
+						map.resetMap();
+						system("cls");
 					}
 
 				if (keyboard[(int)InputKey::K_P])
@@ -147,38 +166,89 @@ int main()
 					system("cls");
 				}
 
-				if (player.CanMove()) // true cuando se detecta event del teclat
+				///UPDATE
+				map.moveAI(player); // Es mouen els enemics.
+
+				//Quan el jugador no té powerUp
+				if (!player.getHasPowerUp())
 				{
-					if (map.NoExistMur(player.GetPos(), player.GetDir())) //Si no existeix mur a la proxima posicio.
+
+					if (player.canMove()) // true cuando se detecta event del teclat
 					{
-						if (map.ExistPunt(player.GetPos(), player.GetDir())) // si es punto se suma uno.
-							player.SetScore(player.GetScore() + 1);
-						map.MovePlayer(player); // mou al player a la prox posicio
+						if (map.noExistMur(player.getPos(), player.getDir())) //Si no existeix mur a la proxima posicio.
+						{
+							if (map.existPunt(player.getPos(), player.getDir())) // si es punto se suma uno.
+								player.setScore(player.getScore() + 1);
+							map.movePlayer(player); // mou al player a la prox posicio
+						}
+						player.setCanMove(false);
 					}
-					player.SetCanMove(false);
-				}
 				
-				map.MoveAI(player); // Es mouen els enemics.
-				if (map.PlayerTouchEnemy(player))
-				{
-					map.ResetPosition(player);
-					player.SetLifes(player.GetLifes() - 1);
+	
+					if (map.playertouchEnemy(player))
+					{
+						map.resetPosition(player);
+						player.setLifes(player.getLifes() - 1);
+						std::cout << player.getCharStepped() << std::endl;
+						Sleep(1000);
 					
-					if (player.GetLifes() == 0)
-						myGameState = GameState::MAIN_MENU;
+						if (player.getLifes() == 0)
+						{
+							myGameState = GameState::EXIT;
+							gameOver = true;
+							map.resetMap();
+
+						}
+					}
+					if (player.touchPowerUp())
+					{
+						player.setHasPowerUp(true);
+					}
+
 				}
-				system("cls"); // limpiamos pantalla
+				else //Quan a agafat un PowerUp
+				{
+					if (player.canMove()) // true cuando se detecta event del teclat
+					{
+						if (map.noExistMur(player.getPos(), player.getDir())) //Si no existeix mur a la proxima posicio.
+						{
+							if (map.existPunt(player.getPos(), player.getDir())) // si es punto se suma uno.
+								player.setScore(player.getScore() + 2);
+							map.movePlayer(player); // mou al player a la prox posicio
+						}
+						player.setCanMove(false);
+					}
+
+					if (map.playertouchEnemy(player))
+					{
+
+
+					}
+					if (player.touchPowerUp())
+					{
+						player.setHasPowerUp(true);
+					}
+				}
+
+				/// DRAW
 				std::cout << "********* PLAY *********" << std::endl;
-				map.PrintMap(); //printamoss MAPA
-				player.PrintPlayer(); //printtamos HUD/Score
-				break; // Fi case game
+				map.printMap(player); //printamoss MAPA
+				player.printPlayer(); //printtamos HUD/Score
+
+				/// FRAME CONTROL
+				Sleep(TIME); //Refresc del joc cada un segón.
+				system("cls"); // limpiamos pantalla
+
+			break; // Fi case game
 		}
 
-		Sleep(TIME); //Refresc del joc cada un segón.
+
 
 	} while (myGameState != GameState::EXIT);
 
 	system("cls"); // limpiamos pantalla
+	if (gameOver)
+		std::cout << "******* GAME OVER ********" << std::endl;
 	std::cout << "Joc acabat" << std::endl;
 	Sleep(2000); // Ending de 2 segons.
 
