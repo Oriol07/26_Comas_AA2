@@ -1,4 +1,3 @@
-
 #include "Player.h"
 
 ///Funcions de la class Player

@@ -22,6 +22,7 @@ private:
 #pragma endregion
 
 public:
+	std::string name;
 #pragma region Constructor
 	Player(); // Constructor per defecte
 	Player(int posX, int posY, int lifes); // Per si volem posar nosaltres la posició, i el numero de vides.

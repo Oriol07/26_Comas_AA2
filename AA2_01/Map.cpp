@@ -750,7 +750,7 @@ void Map::resetPosition(Player &player)
 void Map::printMap(Player player)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //Lletres de color blanc, per el titol.
-	std::cout << "AA2: Desiree Moreno i Oriol Comas" << std::endl << std::endl << "    ";
+	std::cout << "AA2: Oriol Comas" << std::endl << std::endl << "    ";
 	for (int i = 1; i < filas + 1; i++)
 	{
 		for (int j = 0; j < columnas; j++)

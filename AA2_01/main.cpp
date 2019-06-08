@@ -9,12 +9,16 @@
 #include <windows.h>
 #include <time.h>
 #include <vector>
+#include <map>
+#include <list>
+#include <string>
 
 #include "Constants.h"
 #include "Types.h"
 #include "Player.h"
 #include "Blinky.h"
 #include "Map.h"
+#include "Ranking.h"
 
 
 
@@ -28,6 +32,12 @@ int main()
 	bool mainMenuFirst = true;
 	int time = 0;
 	int timeMili = 0;
+	int counterRanking;
+	bool chargingRanking;
+	bool toEnterRanking = false;
+	std::map<std::string, unsigned int> rankingGeneral; // ranking general.
+	std::list<ranking> rankingTop; // ranking dels top 5
+	ranking gRank; 
 	
 	GameState myGameState = GameState::SPLASH_SCREEN;
 
@@ -50,14 +60,14 @@ int main()
 		switch (myGameState)
 		{
 			case GameState::SPLASH_SCREEN:
-				///DRAW
+				/// DRAW
 				std::cout << " ********* SPLASHSCREEN ********* " << std::endl;
 				Sleep(200);
 				std::cout << " Welcome to PACMAN";
 				Sleep(200);
 				std::cout << "."; Sleep(200); std::cout << "."; Sleep(200); std::cout << "."; Sleep(200);
 
-				///UPDATE
+				/// UPDATE
 				time++;
 
 				if (time == 3) // Als 3 segons passarem al main menu
@@ -70,7 +80,7 @@ int main()
 			break; // Fi del case SplashScreen 
 
 			case GameState::MAIN_MENU:
-				///EVENTS DE TECLAT
+				/// EVENTS DE TECLAT
 				if (keyboard[(int)InputKey::K_1]) 
 				{
 					myGameState = GameState::GAME;
@@ -81,6 +91,8 @@ int main()
 				if (keyboard[(int)InputKey::K_2])
 				{
 					myGameState = GameState::RANKING;
+					chargingRanking = true;
+					system("cls");
 				}
 
 				if (keyboard[(int)InputKey::K_ESC] || keyboard[(int)InputKey::K_0]) //"ESCAPE" // terminar el juego.
@@ -98,13 +110,14 @@ int main()
 
 			case GameState::PAUSE:
 
-				///Events de teclat
+				/// Events de teclat
 				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
 				{
 					mainMenuFirst = true;
 					myGameState = GameState::MAIN_MENU;
 					map.resetPosition(player);
 					map.resetMap();
+					Sleep(1000);
 					
 				}
 
@@ -114,14 +127,65 @@ int main()
 					Sleep(1000);
 					system("cls");
 				}
-				///DRAW 
+				/// DRAW 
 				std::cout << " ******* PAUSE ******** \n Press SPACE to continue" << std::endl;
 				system("cls");
+
 				
 			break; // Fi case Pausa
+			
+			//Cas ranking
+			case GameState::RANKING:
+
+				/// Key Events
+				if (keyboard[(int)InputKey::K_ESC]) //"ESCAPE" // terminar el juego.
+				{
+					mainMenuFirst = true;
+					myGameState = GameState::MAIN_MENU;
+					map.resetPosition(player);
+					map.resetMap();
+					Sleep(2000);
+					system("cls");
+				}
+				//Preguntem
+				if (toEnterRanking)
+				{
+					std::cout << "What's your name?" << std::endl;
+					std::cin >> player.name;
+					writeRanking(player.name, player.getScore());
+					toEnterRanking = false;
+				}
+
+				//  Mirem si el ranking s'ha llegit ja i ordenat.
+				if (chargingRanking)
+				{
+
+					/// Update
+					readRanking(rankingGeneral); //llegim
+					swapRanking(rankingGeneral, rankingTop); // Passem el map a un list.
+					rankingTop.sort(compareBig);
+					chargingRanking = false;
+					
+					/// DRAW
+					counterRanking = 0;
+					for (std::list<ranking>::iterator it = rankingTop.begin(); it != rankingTop.end(); ++it)
+					{
+						counterRanking++;
+
+						std::cout << counterRanking << ". " << it->name << " " << it->score << std::endl;
+						if (counterRanking == 5)
+						{
+							it = rankingTop.end();
+							it--;
+						}
+					}
+				}
+
+			break; //Fi case rankin
+				
 
 			case GameState::GAME:
-				///Events de Teclat
+				/// Events de Teclat
 				if (KEYPRESSED)
 				{
 
@@ -166,7 +230,7 @@ int main()
 					system("cls");
 				}
 
-				///UPDATE
+				/// UPDATE
 				map.moveAI(player); // Es mouen els enemics.
 
 				//Quan el jugador no té powerUp
@@ -194,7 +258,9 @@ int main()
 					
 						if (player.getLifes() == 0)
 						{
-							myGameState = GameState::EXIT;
+							myGameState = GameState::RANKING;
+							toEnterRanking = true;
+							chargingRanking = true;
 							gameOver = true;
 							map.resetMap();
 
