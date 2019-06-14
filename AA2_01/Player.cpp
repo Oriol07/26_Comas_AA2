@@ -198,11 +198,14 @@ int Player::getTimePowerUp()
 /********************************
 * Imprimeix la HUD del jugador. *
 *********************************/
-void Player::printPlayer()
+void Player::printPlayer(int t)
 {
-
-	//
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);
 	std::cout << "Score: " << getScore() << "         Lifes: " << lifes << std::endl;
+	if (hasPowerUp)
+	{
+		std::cout << "PowerUp: " << t << std::endl;
+	}
+
 }
 #pragma endregion

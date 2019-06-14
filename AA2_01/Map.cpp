@@ -399,10 +399,14 @@ bool Map::playertouchEnemy(Player player)
 {
 	if (player.getHasPowerUp())
 	{
+		if(player.touchEnemy())
+		{
+			return true;
+		}
 		posMap = player.getPos();
 		for (int i = 0; i < eBlinky.size(); i++)
 		{
-			if ((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y))
+			if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
 			{
 				eBlinky[i].setDead(true);
 				map[eBlinky[i].getPosition().y][eBlinky[i].getPosition().x] = JUGADOR;
@@ -411,7 +415,7 @@ bool Map::playertouchEnemy(Player player)
 		}
 		for (int i = 0; i < eInky.size(); i++)
 		{
-			if ((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y))
+			if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
 			{
 				eInky[i].setDead(true);
 				map[eInky[i].getPosition().y][eInky[i].getPosition().x] = JUGADOR;
@@ -421,7 +425,7 @@ bool Map::playertouchEnemy(Player player)
 		}
 		for (int i = 0; i < eClyde.size(); i++)
 		{
-			if ((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y))
+			if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)))
 			{
 				eClyde[i].setDead(true); 
 				map[eClyde[i].getPosition().y][eClyde[i].getPosition().x] = JUGADOR;
@@ -433,7 +437,7 @@ bool Map::playertouchEnemy(Player player)
 	{
 		for (int i = 0; i < eBlinky.size(); i++)
 		{
-			if ((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y))
+			if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
 			{
 				eBlinky[i].setCharStepped(' '); player.setCharStepped(' ');
 				return true;
@@ -442,7 +446,7 @@ bool Map::playertouchEnemy(Player player)
 		}
 		for (int i = 0; i < eClyde.size(); i++)
 		{
-			if ((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y))
+			if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)) )
 			{
 				eClyde[i].setCharStepped(' '); player.setCharStepped(' ');
 				return true;
@@ -450,7 +454,7 @@ bool Map::playertouchEnemy(Player player)
 		}
 		for (int i = 0; i < eInky.size(); i++)
 		{
-			if ((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y))
+			if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
 			{
 				eInky[i].setCharStepped(' '); player.setCharStepped(' ');
 				return true;
@@ -684,6 +688,11 @@ void Map::moveAI(Player player)
 		{
 			moveBlinky(eBlinky[i]);
 		}
+		else
+		{
+			eBlinky[i].setPosition(eBlinky[i].getInitPos());
+			eBlinky[i].setDead(false);
+		}
 			
 	}
 		
@@ -693,6 +702,11 @@ void Map::moveAI(Player player)
 		{
 			moveClyde(eClyde[i], player);
 		}
+		else
+		{
+			eClyde[i].setPosition(eClyde[i].getInitPos());
+			eClyde[i].setDead(false);
+		}
 			
 	}
 		
@@ -701,6 +715,11 @@ void Map::moveAI(Player player)
 		if (!eInky[i].isDead())
 		{
 			moveInky(eInky[i], player);
+		}
+		else
+		{
+			eInky[i].setPosition(eInky[i].getInitPos());
+			eInky[i].setDead(false);
 		}
 			
 	}

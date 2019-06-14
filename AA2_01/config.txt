@@ -11,11 +11,11 @@ XXXX*X XXXXX X*XXXX
     *  X   X  *    
 XXXX*X XXXXX X*XXXX
    X*X0  >   X*X   
-XXXX*X XXXXX X*XXXX
-X********X********X
+XXXX*X XXXXXXX*XXXX
+X****X***X***X****X
 X*XX*XXX*X*XXX*XX*X
-X**X*0***$*****X**X
-XX*X*X*XXXXX*X*X*XX
+X**X*0X**$***X*X**X
+XX*X*X*XXXXXXX*X*XX
 X****X***X***X****X
 X*XXXXXX*X*XXXXXX*X
 X0***************0X

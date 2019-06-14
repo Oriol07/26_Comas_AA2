@@ -65,7 +65,7 @@ public:
 #pragma endregion
 
 #pragma region Print
-	void printPlayer(); // La HUD del jugador.
+	void printPlayer(int t); // La HUD del jugador.
 #pragma endregion
 
 };

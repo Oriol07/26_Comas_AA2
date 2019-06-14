@@ -31,7 +31,7 @@ int main()
 	bool gameOver = false;
 	bool mainMenuFirst = true;
 	int time = 0;
-	int timeMili = 0;
+	float timeMili = 0;
 	int counterRanking;
 	bool chargingRanking;
 	bool toEnterRanking = false;
@@ -40,7 +40,7 @@ int main()
 	ranking gRank; 
 	
 	GameState myGameState = GameState::SPLASH_SCREEN;
-
+	
 	///MAIN LOOP del joc.
 	do
 	{
@@ -61,11 +61,13 @@ int main()
 		{
 			case GameState::SPLASH_SCREEN:
 				/// DRAW
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
 				std::cout << " ********* SPLASHSCREEN ********* " << std::endl;
 				Sleep(200);
-				std::cout << " Welcome to PACMAN";
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
+				std::cout << " Welcome to PACMAN" << std::flush;
 				Sleep(200);
-				std::cout << "."; Sleep(200); std::cout << "."; Sleep(200); std::cout << "."; Sleep(200);
+				std::cout << "." << std::flush; Sleep(200); std::cout << "." << std::flush; Sleep(200); std::cout << "." << std::flush; Sleep(200);
 
 				/// UPDATE
 				time++;
@@ -103,7 +105,9 @@ int main()
 				if (mainMenuFirst)
 				{
 					mainMenuFirst = false;
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
 					std::cout << " ********* MAIN MENU ********* " << std::endl;
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
 					std::cout << " 1 - PLAY. " << std::endl << " 2 - RANKING. " << std::endl << " 0 - EXIT GAME." << std::endl;
 				}
 			break; // break de case Main Menu
@@ -128,6 +132,7 @@ int main()
 					system("cls");
 				}
 				/// DRAW 
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
 				std::cout << " ******* PAUSE ******** \n Press SPACE to continue" << std::endl;
 				system("cls");
 
@@ -144,12 +149,13 @@ int main()
 					myGameState = GameState::MAIN_MENU;
 					map.resetPosition(player);
 					map.resetMap();
-					Sleep(2000);
+					Sleep(2500);
 					system("cls");
 				}
 				//Preguntem
 				if (toEnterRanking)
 				{
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
 					std::cout << "What's your name?" << std::endl;
 					std::cin >> player.name;
 					writeRanking(player.name, player.getScore());
@@ -171,7 +177,7 @@ int main()
 					for (std::list<ranking>::iterator it = rankingTop.begin(); it != rankingTop.end(); ++it)
 					{
 						counterRanking++;
-
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), counterRanking + 1);
 						std::cout << counterRanking << ". " << it->name << " " << it->score << std::endl;
 						if (counterRanking == 5)
 						{
@@ -237,6 +243,23 @@ int main()
 				if (!player.getHasPowerUp())
 				{
 
+					if (map.playertouchEnemy(player))
+					{
+						map.resetPosition(player);
+						player.setLifes(player.getLifes() - 1);
+						std::cout << player.getCharStepped() << std::endl;
+						Sleep(1000);
+
+						if (player.getLifes() == 0)
+						{
+							myGameState = GameState::RANKING;
+							toEnterRanking = true;
+							chargingRanking = true;
+							gameOver = true;
+							map.resetMap();
+
+						}
+					}
 					if (player.canMove()) // true cuando se detecta event del teclat
 					{
 						if (map.noExistMur(player.getPos(), player.getDir())) //Si no existeix mur a la proxima posicio.
@@ -249,47 +272,44 @@ int main()
 					}
 				
 	
-					if (map.playertouchEnemy(player))
-					{
-						map.resetPosition(player);
-						player.setLifes(player.getLifes() - 1);
-						std::cout << player.getCharStepped() << std::endl;
-						Sleep(1000);
-					
-						if (player.getLifes() == 0)
-						{
-							myGameState = GameState::RANKING;
-							toEnterRanking = true;
-							chargingRanking = true;
-							gameOver = true;
-							map.resetMap();
 
-						}
-					}
 					if (player.touchPowerUp())
 					{
+						player.setCharStepped(' ');
+						time = 0;
+						timeMili = 0;
 						player.setHasPowerUp(true);
 					}
 
 				}
 				else //Quan a agafat un PowerUp
 				{
+					timeMili++;
+					if (timeMili == 2)
+					{
+						time++;
+						timeMili = 0;
+					}
+					if (time > 7) player.setHasPowerUp(false);
+
+					if (map.playertouchEnemy(player))
+					{
+						player.setScore(player.getScore() + 15);
+
+					}
+
 					if (player.canMove()) // true cuando se detecta event del teclat
 					{
 						if (map.noExistMur(player.getPos(), player.getDir())) //Si no existeix mur a la proxima posicio.
 						{
 							if (map.existPunt(player.getPos(), player.getDir())) // si es punto se suma uno.
-								player.setScore(player.getScore() + 2);
+								player.setScore(player.getScore() + 1);
 							map.movePlayer(player); // mou al player a la prox posicio
 						}
 						player.setCanMove(false);
 					}
 
-					if (map.playertouchEnemy(player))
-					{
 
-
-					}
 					if (player.touchPowerUp())
 					{
 						player.setHasPowerUp(true);
@@ -297,9 +317,10 @@ int main()
 				}
 
 				/// DRAW
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
 				std::cout << "********* PLAY *********" << std::endl;
 				map.printMap(player); //printamoss MAPA
-				player.printPlayer(); //printtamos HUD/Score
+				player.printPlayer(time); //printtamos HUD/Score
 
 				/// FRAME CONTROL
 				Sleep(TIME); //Refresc del joc cada un segón.

@@ -43,6 +43,7 @@ class Map
 		bool existPunt(vec2 pos, Direction dir);
 		bool noExistMur(vec2 pos, Direction dir);
 		bool playertouchEnemy(Player player);
+		
 	#pragma endregion
 
 	#pragma region Position functions
@@ -55,7 +56,6 @@ class Map
 		char nextCharPosition(Direction dir, vec2 p);
 		void setFirstDirBlinky(Blinky &blink);
 		void resetPosition(Player &player);
-
 	#pragma endregion
 
 	#pragma region Read and Print function

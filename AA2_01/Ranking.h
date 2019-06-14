@@ -33,12 +33,12 @@ void writeRanking(const std::string name, const unsigned int score)
 
 }
 
-//passem les 5 millors dades de un std::map a un std::list
+//passem les dades de un std::map a un std::list
 void swapRanking(std::map<std::string, unsigned int>& r, std::list<ranking>& rList)
 {
 	ranking gRank;
 	rList.clear();
-
+	int count = 0;
 	for (std::map<std::string, unsigned int>::iterator it = r.begin(); it != r.end(); ++it)
 	{
 		gRank.name = it->first;
