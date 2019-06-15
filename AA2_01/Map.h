@@ -49,13 +49,14 @@ class Map
 	#pragma region Position functions
 		void setPlayer(vec2 pos);
 		void movePlayer(Player &player);
-		void moveAI(Player player);
+		void moveAI(Player &player);
 		void moveBlinky(Blinky &blink);
 		void moveInky(Inky &ink, Player player);
 		void moveClyde(Clyde &clyd, Player player);
 		char nextCharPosition(Direction dir, vec2 p);
 		void setFirstDirBlinky(Blinky &blink);
 		void resetPosition(Player &player);
+		void moveInitPosAI(Player &player);
 	#pragma endregion
 
 	#pragma region Read and Print function

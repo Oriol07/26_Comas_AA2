@@ -270,7 +270,23 @@ int main()
 						}
 						player.setCanMove(false);
 					}
-				
+					if (map.playertouchEnemy(player))
+					{
+						map.resetPosition(player);
+						player.setLifes(player.getLifes() - 1);
+						std::cout << player.getCharStepped() << std::endl;
+						Sleep(1000);
+
+						if (player.getLifes() == 0)
+						{
+							myGameState = GameState::RANKING;
+							toEnterRanking = true;
+							chargingRanking = true;
+							gameOver = true;
+							map.resetMap();
+
+						}
+					}
 	
 
 					if (player.touchPowerUp())
@@ -294,8 +310,7 @@ int main()
 
 					if (map.playertouchEnemy(player))
 					{
-						player.setScore(player.getScore() + 15);
-
+						map.moveInitPosAI(player);
 					}
 
 					if (player.canMove()) // true cuando se detecta event del teclat
@@ -309,12 +324,17 @@ int main()
 						player.setCanMove(false);
 					}
 
-
+					if (map.playertouchEnemy(player))
+					{
+						map.moveInitPosAI(player);
+					}
 					if (player.touchPowerUp())
 					{
+						time -= 7;
 						player.setHasPowerUp(true);
 					}
 				}
+				
 
 				/// DRAW
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);

@@ -399,66 +399,68 @@ bool Map::playertouchEnemy(Player player)
 {
 	if (player.getHasPowerUp())
 	{
-		if(player.touchEnemy())
-		{
-			return true;
-		}
 		posMap = player.getPos();
 		for (int i = 0; i < eBlinky.size(); i++)
 		{
-			if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
-			{
-				eBlinky[i].setDead(true);
-				map[eBlinky[i].getPosition().y][eBlinky[i].getPosition().x] = JUGADOR;
-				return true;
-			}
+			if (!eBlinky[i].isDead())
+				if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
+				{
+					eBlinky[i].setDead(true);
+					map[eBlinky[i].getPosition().y][eBlinky[i].getPosition().x] = JUGADOR;
+					return true;
+				}
 		}
 		for (int i = 0; i < eInky.size(); i++)
 		{
-			if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
-			{
-				eInky[i].setDead(true);
-				map[eInky[i].getPosition().y][eInky[i].getPosition().x] = JUGADOR;
-				return true;
-			}
+			if(!eInky[i].isDead())
+				if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
+				{
+					eInky[i].setDead(true);
+					map[eInky[i].getPosition().y][eInky[i].getPosition().x] = JUGADOR;
+					return true;
+				}
 
 		}
 		for (int i = 0; i < eClyde.size(); i++)
 		{
-			if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)))
-			{
-				eClyde[i].setDead(true); 
-				map[eClyde[i].getPosition().y][eClyde[i].getPosition().x] = JUGADOR;
-				return true;
-			}
+			if (!eClyde[i].isDead())
+				if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)))
+				{
+					eClyde[i].setDead(true); 
+					map[eClyde[i].getPosition().y][eClyde[i].getPosition().x] = JUGADOR;
+					return true;
+				}
 		}
 	}
 	else
 	{
 		for (int i = 0; i < eBlinky.size(); i++)
 		{
-			if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
-			{
-				eBlinky[i].setCharStepped(' '); player.setCharStepped(' ');
-				return true;
-			}
+			if (!eBlinky[i].isDead())
+				if (((eBlinky[i].getPosition().x == player.getPos().x) && (eBlinky[i].getPosition().y == player.getPos().y)))
+				{
+					eBlinky[i].setCharStepped(' '); player.setCharStepped(' ');
+					return true;
+				}
 				
 		}
 		for (int i = 0; i < eClyde.size(); i++)
 		{
-			if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)) )
-			{
-				eClyde[i].setCharStepped(' '); player.setCharStepped(' ');
-				return true;
-			}
+			if (!eClyde[i].isDead())
+				if (((eClyde[i].getPosition().x == player.getPos().x) && (eClyde[i].getPosition().y == player.getPos().y)) )
+				{
+					eClyde[i].setCharStepped(' '); player.setCharStepped(' ');
+					return true;
+				}
 		}
 		for (int i = 0; i < eInky.size(); i++)
 		{
-			if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
-			{
-				eInky[i].setCharStepped(' '); player.setCharStepped(' ');
-				return true;
-			}
+			if (!eInky[i].isDead())
+				if (((eInky[i].getPosition().x == player.getPos().x) && (eInky[i].getPosition().y == player.getPos().y)))
+				{
+					eInky[i].setCharStepped(' '); player.setCharStepped(' ');
+					return true;
+				}
 				
 		}
 	}
@@ -677,10 +679,48 @@ void Map::moveInky(Inky &ink, Player player)
 
 }
 
+
+void Map::moveInitPosAI(Player &player)
+{
+	for (int i = 0; i < eBlinky.size(); i++)
+	{
+		if (eBlinky[i].isDead())
+		{
+			eBlinky[i].setPosition(eBlinky[i].getInitPos());
+			eBlinky[i].setDead(false);
+			player.setScore(player.getScore() + 15);
+		}
+
+	}
+
+	for (int i = 0; i < eClyde.size(); i++)
+	{
+		if (eClyde[i].isDead())
+		{
+
+			eClyde[i].setPosition(eClyde[i].getInitPos());
+			eClyde[i].setDead(false);
+			player.setScore(player.getScore() + 15);
+		}
+	}
+
+	for (int i = 0; i < eInky.size(); i++)
+	{
+		if (eInky[i].isDead())
+		{
+			eInky[i].setPosition(eInky[i].getInitPos());
+			eInky[i].setDead(false);
+			player.setScore(player.getScore() + 15);
+		}
+
+	}
+
+
+}
 /**************************************************************
 * Actualizem tots els moviments dels enemics en els vectors.  *
 ***************************************************************/
-void Map::moveAI(Player player)
+void Map::moveAI(Player &player)
 {
 	for (int i = 0; i < eBlinky.size(); i++)
 	{
@@ -692,6 +732,7 @@ void Map::moveAI(Player player)
 		{
 			eBlinky[i].setPosition(eBlinky[i].getInitPos());
 			eBlinky[i].setDead(false);
+			player.setScore(player.getScore() + 15);
 		}
 			
 	}
@@ -706,6 +747,7 @@ void Map::moveAI(Player player)
 		{
 			eClyde[i].setPosition(eClyde[i].getInitPos());
 			eClyde[i].setDead(false);
+			player.setScore(player.getScore() + 15);
 		}
 			
 	}
@@ -720,6 +762,7 @@ void Map::moveAI(Player player)
 		{
 			eInky[i].setPosition(eInky[i].getInitPos());
 			eInky[i].setDead(false);
+			player.setScore(player.getScore() + 15);
 		}
 			
 	}
