@@ -26,16 +26,17 @@ void Blinky::setPosition(vec2 position)
 
 void Blinky::setCharStepped(char step)
 {
-	if (step != BLINKY && step != INKY && step != CLYDE)
+	if (step != BLINKY && step != INKY && step != CLYDE && step != JUGADOR)
 		charStepped = step;
 	else
 		charStepped = ' ';
 }
+/*
 bool Blinky::touchPlayer()
 {
 	return charStepped == JUGADOR;
 }
-
+*/
 Direction Blinky::getDir()
 {
 	return mov;

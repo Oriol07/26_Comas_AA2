@@ -45,10 +45,6 @@ char Clyde::getCharStepped()
 	return charStepped;
 }
 
-bool Clyde::touchPlayer(){
-
-	return charStepped == JUGADOR; 
-}
 
 
 Direction Clyde::getDir()

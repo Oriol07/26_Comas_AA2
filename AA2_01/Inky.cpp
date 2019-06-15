@@ -37,13 +37,6 @@ void Inky::setCharStepped(char step)
 		charStepped = ' ';
 }
 
-/*********************************************
-* Mirem si ha tocat al jugador al trepitjar. *
-**********************************************/
-bool Inky::touchPlayer()
-{
-	return charStepped == JUGADOR;
-}
 
 /**********************************************
 * Obtenim la direcció a la que s'ha de moure. *

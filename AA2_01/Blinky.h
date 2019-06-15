@@ -34,7 +34,6 @@ class Blinky
 		vec2 getInitPos();
 		void setCharStepped(char a);
 		char getCharStepped();
-		bool touchPlayer();
 	#pragma endregion
 
 	#pragma region Other functions
