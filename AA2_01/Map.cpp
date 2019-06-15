@@ -679,7 +679,9 @@ void Map::moveInky(Inky &ink, Player player)
 
 }
 
-
+/********************************************************
+* Mirem si l'enemic ha de tornar a la posicio inicial.	*
+*********************************************************/
 void Map::moveInitPosAI(Player &player)
 {
 	for (int i = 0; i < eBlinky.size(); i++)
@@ -717,6 +719,7 @@ void Map::moveInitPosAI(Player &player)
 
 
 }
+
 /**************************************************************
 * Actualizem tots els moviments dels enemics en els vectors.  *
 ***************************************************************/
@@ -862,9 +865,9 @@ void Map::printMap(Player player)
 }
 
 
-/********************************************
+/********************
 * Reinici del mapa. *
-*********************************************/
+*********************/
 void Map::resetMap()
 {
 	std::ifstream llegirConfig;

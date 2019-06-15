@@ -204,7 +204,8 @@ void Player::printPlayer(int t)
 	std::cout << "Score: " << getScore() << "         Lifes: " << lifes << std::endl;
 	if (hasPowerUp)
 	{
-		std::cout << "PowerUp: " << t << std::endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+		std::cout << "PowerUp: " << t << " s" << std::endl;
 	}
 
 }

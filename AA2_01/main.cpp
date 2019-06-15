@@ -292,7 +292,7 @@ int main()
 					if (player.touchPowerUp())
 					{
 						player.setCharStepped(' ');
-						time = 0;
+						time = 7;
 						timeMili = 0;
 						player.setHasPowerUp(true);
 					}
@@ -303,10 +303,10 @@ int main()
 					timeMili++;
 					if (timeMili == 2)
 					{
-						time++;
+						time--;
 						timeMili = 0;
 					}
-					if (time > 7) player.setHasPowerUp(false);
+					if (time < 0) player.setHasPowerUp(false);
 
 					if (map.playertouchEnemy(player))
 					{
@@ -330,7 +330,7 @@ int main()
 					}
 					if (player.touchPowerUp())
 					{
-						time -= 7;
+						time = 7;
 						player.setHasPowerUp(true);
 					}
 				}

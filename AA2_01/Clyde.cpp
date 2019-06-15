@@ -25,11 +25,13 @@ vec2 Clyde::getPosition()
 	return pos;
 }
 
+//Determinem la posicio
 void Clyde::setPosition(vec2 position) {
 
 	pos = position;
 }
 
+//Posarem quin es el caracter que es trapitja
 void Clyde::setCharStepped(char step) {
 
 	if (step != BLINKY && step != INKY && step != CLYDE && step != JUGADOR) {
@@ -40,23 +42,26 @@ void Clyde::setCharStepped(char step) {
 		charStepped = ' ';
 	}
 }
+
+//Obtindrem el caracter que trepitja
 char Clyde::getCharStepped()
 {
 	return charStepped;
 }
 
 
-
+//Obtenim la direccio
 Direction Clyde::getDir()
 {
 	return mov;
 }
 
+//Coloquem la direccio
 void Clyde::setDir(Direction d)
 {
 	mov = d;
 }
-
+//Coloquem la direcció inicial
 void Clyde::setInitPos(vec2 position)
 {
 	initPos = position;
@@ -81,10 +86,12 @@ vec2 Clyde::getInitPos()
 #pragma endregion
 
 #pragma region Other functions
+//Mirem si esta mort
 bool Clyde::isDead()
 {
 	return dead;
 }
+//Determinem si esta mort
 void Clyde::setDead(bool d)
 {
 	dead = d;
